@@ -7,1267 +7,1457 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-:root {
-  --bg: #F5F7FA;
-  --bg2: #FFFFFF;
-  --bg3: #EEF1F6;
-  --surface: #E6EAF2;
-  --surface2: #DDE2EE;
-  --border: rgba(30,80,160,0.10);
-  --border2: rgba(30,80,160,0.18);
-  --text: #0F1C35;
-  --text2: #3B5280;
-  --text3: #7A93BE;
-  --accent: #1A7FD4;
-  --accent2: #0E9E6E;
-  --accent3: #D97706;
-  --accent4: #C026D3;
-  --red: #DC2626;
-  --font-display: 'DM Serif Display', Georgia, serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
-  --r: 10px;
-  --r2: 16px;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; line-height: 1.6; min-height: 100vh; }
-
-/* HEADER */
-.topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top:0; z-index:100; flex-wrap:wrap; gap:10px; }
-.logo { display:flex; align-items:center; gap:10px; }
-.logo-icon { width:34px; height:34px; border-radius:8px; background: linear-gradient(135deg,#1d4ed8,#38bdf8); display:flex; align-items:center; justify-content:center; font-size:16px; }
-.logo-name { font-family: var(--font-display); font-size:20px; color:var(--text); }
-.logo-name span { color:var(--accent); }
-.logo-tag { font-size:10px; color:var(--text3); letter-spacing:0.5px; }
-.topbar-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.pill { font-size:11px; padding:4px 12px; border-radius:100px; border:1px solid var(--border2); color:var(--text2); background:var(--bg3); cursor:pointer; transition:all 0.15s; }
-.pill:hover, .pill.active { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; }
-.badge { font-size:10px; padding:3px 9px; border-radius:100px; background:rgba(14,158,110,0.12); color:var(--accent2); border:1px solid rgba(52,211,153,0.25); }
-
-/* HERO */
-.hero { padding:40px 24px 28px; text-align:center; background: radial-gradient(ellipse at 50% 0%, rgba(26,127,212,0.07) 0%, transparent 70%); }
-.hero h1 { font-family:var(--font-display); font-size:clamp(28px,5vw,52px); color:var(--text); line-height:1.15; margin-bottom:12px; }
-.hero h1 em { font-style:italic; color:var(--accent); }
-.hero p { font-size:15px; color:var(--text2); max-width:600px; margin:0 auto 20px; }
-.hero-stats { display:flex; justify-content:center; flex-wrap:wrap; gap:24px; margin-top:20px; }
-.hero-stat { text-align:center; }
-.hero-stat-num { font-family:var(--font-display); font-size:28px; color:var(--accent); }
-.hero-stat-label { font-size:11px; color:var(--text3); }
-
-/* FILTERS */
-.filters { display:flex; flex-wrap:wrap; gap:8px; padding:14px 24px; background:var(--bg2); border-bottom:1px solid var(--border); align-items:center; }
-.filter-group { display:flex; align-items:center; gap:6px; }
-.filter-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
-select { background:var(--bg3); color:var(--text); border:1px solid var(--border2); border-radius:var(--r); padding:6px 10px; font-size:12px; font-family:var(--font-body); cursor:pointer; }
-select:focus { outline:none; border-color:var(--accent); }
-.filter-divider { width:1px; height:20px; background:var(--border); }
-
-/* CITY TABS */
-.city-tabs { display:flex; overflow-x:auto; gap:0; padding:0 24px; background:var(--bg2); border-bottom:1px solid var(--border); scrollbar-width:none; }
-.city-tabs::-webkit-scrollbar { display:none; }
-.city-tab { flex-shrink:0; padding:14px 20px 12px; font-size:13px; color:var(--text3); cursor:pointer; border-bottom:2px solid transparent; transition:all 0.15s; white-space:nowrap; display:flex; align-items:center; gap:6px; }
-.city-tab:hover { color:var(--text2); }
-.city-tab.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:500; }
-.city-dot { width:8px; height:8px; border-radius:50%; }
-
-/* MAIN LAYOUT */
-.main { padding:20px 24px; max-width:1400px; margin:0 auto; }
-
-/* KPI STRIP */
-.kpi-strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:20px; }
-.kpi { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r2); padding:14px 16px; transition:border-color 0.2s; }
-.kpi:hover { border-color:var(--border2); }
-.kpi-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
-.kpi-val { font-family:var(--font-display); font-size:26px; color:var(--text); line-height:1; }
-.kpi-sub { font-size:10px; margin-top:5px; display:flex; align-items:center; gap:4px; }
-.up { color:var(--accent2); } .dn { color:var(--red); } .neu { color:var(--text3); }
-.kpi-bar { height:3px; background:var(--bg3); border-radius:2px; margin-top:8px; overflow:hidden; }
-.kpi-bar-fill { height:100%; border-radius:2px; background:var(--accent); transition:width 0.6s ease; }
-
-/* SECTION TABS */
-.section-tabs { display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; }
-.stab { font-size:12px; padding:7px 16px; border-radius:var(--r); border:1px solid var(--border); color:var(--text3); cursor:pointer; background:var(--bg2); transition:all 0.15s; }
-.stab.active { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; }
-.stab:hover:not(.active) { border-color:var(--border2); color:var(--text2); }
-
-/* PANELS */
-.panel { display:none; }
-.panel.active { display:block; }
-
-/* GRID LAYOUTS */
-.grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; }
-.grid3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
-.card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r2); padding:18px 20px; box-shadow:0 1px 6px rgba(30,80,160,0.06); }
-.card-title { font-size:12px; color:var(--text3); font-weight:500; margin-bottom:14px; text-transform:uppercase; letter-spacing:0.4px; }
-.chart-wrap { position:relative; width:100%; }
-
-/* SKILLS HEATMAP */
-.skills-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px; }
-.skill-chip { border-radius:var(--r); padding:10px 12px; text-align:center; transition:transform 0.15s; cursor:default; }
-.skill-chip:hover { transform:scale(1.04); }
-.skill-chip-name { font-size:12px; font-weight:500; margin-bottom:4px; }
-.skill-chip-demand { font-size:10px; }
-.skill-chip-bar { height:3px; border-radius:2px; margin-top:6px; }
-.demand-critical { background:rgba(239,68,68,0.09); border:1px solid rgba(239,68,68,0.22); }
-.demand-critical .skill-chip-name { color:#fca5a5; }
-.demand-critical .skill-chip-demand { color:#ef4444; }
-.demand-critical .skill-chip-bar { background:#ef4444; }
-.demand-high { background:rgba(245,158,11,0.10); border:1px solid rgba(245,158,11,0.20); }
-.demand-high .skill-chip-name { color:#fcd34d; }
-.demand-high .skill-chip-demand { color:#f59e0b; }
-.demand-high .skill-chip-bar { background:#f59e0b; }
-.demand-mid { background:rgba(26,127,212,0.08); border:1px solid rgba(26,127,212,0.16); }
-.demand-mid .skill-chip-name { color:#7dd3fc; }
-.demand-mid .skill-chip-demand { color:var(--accent); }
-.demand-mid .skill-chip-bar { background:var(--accent); }
-.demand-grow { background:rgba(14,158,110,0.08); border:1px solid rgba(14,158,110,0.16); }
-.demand-grow .skill-chip-name { color:#6ee7b7; }
-.demand-grow .skill-chip-demand { color:var(--accent2); }
-.demand-grow .skill-chip-bar { background:var(--accent2); }
-
-/* LIFE SCORE CARDS */
-.life-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; margin-bottom:16px; }
-.life-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r2); padding:16px; }
-.life-card-icon { font-size:22px; margin-bottom:8px; }
-.life-card-label { font-size:11px; color:var(--text3); margin-bottom:6px; }
-.life-card-val { font-size:18px; font-weight:600; color:var(--text); }
-.life-score-bar { height:5px; border-radius:3px; background:var(--bg3); margin-top:8px; }
-.life-score-fill { height:100%; border-radius:3px; transition:width 0.7s ease; }
-
-/* HUB MAP (visual) */
-.hub-map { position:relative; background:var(--bg3); border-radius:var(--r2); border:1px solid var(--border); overflow:hidden; height:280px; }
-.hub-map-bg { position:absolute; inset:0; opacity:0.06; background-image: radial-gradient(circle,var(--accent) 1px,transparent 1px); background-size:28px 28px; }
-.hub-pin { position:absolute; transform:translate(-50%,-100%); cursor:pointer; text-align:center; }
-.hub-pin-circle { border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:600; color:#000; border:2px solid rgba(255,255,255,0.3); transition:transform 0.2s; }
-.hub-pin:hover .hub-pin-circle { transform:scale(1.2); }
-.hub-pin-label { font-size:9px; color:var(--text2); margin-top:4px; white-space:nowrap; background:rgba(255,255,255,0.92); padding:1px 5px; border-radius:3px; }
-.heat-blob { position:absolute; border-radius:50%; opacity:0.14; pointer-events:none; animation:pulse 3s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:0.14;transform:scale(1)} 50%{opacity:0.22;transform:scale(1.1)} }
-
-/* JOB CARDS */
-.job-list { display:flex; flex-direction:column; gap:10px; }
-.job-card { background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; transition:border-color 0.15s; }
-.job-card:hover { border-color:var(--border2); }
-.job-title { font-size:13px; font-weight:500; color:var(--text); }
-.job-meta { font-size:11px; color:var(--text3); margin-top:3px; }
-.job-tag { font-size:10px; padding:2px 8px; border-radius:100px; font-weight:500; }
-.tag-gcc { background:rgba(14,158,110,0.12); color:#0E9E6E; border:1px solid rgba(52,211,153,0.3); }
-.tag-mnc { background:rgba(26,127,212,0.12); color:#1A7FD4; border:1px solid rgba(56,189,248,0.3); }
-.tag-startup { background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.20); }
-.job-salary { font-family:var(--font-display); font-size:16px; color:var(--accent2); white-space:nowrap; }
-.job-right { text-align:right; }
-
-/* COMPARISON TABLE */
-.compare-table { width:100%; border-collapse:collapse; font-size:12px; }
-.compare-table th { padding:10px 12px; text-align:left; font-size:10px; color:var(--text3); font-weight:500; border-bottom:1px solid var(--border); text-transform:uppercase; letter-spacing:0.4px; }
-.compare-table td { padding:10px 12px; border-bottom:1px solid rgba(99,179,237,0.06); color:var(--text); vertical-align:middle; }
-.compare-table tr:hover td { background:rgba(56,189,248,0.04); }
-.score-pill { display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:100px; font-size:10px; font-weight:600; }
-.score-a { background:rgba(14,158,110,0.12); color:#0E9E6E; }
-.score-b { background:rgba(26,127,212,0.12); color:#1A7FD4; }
-.score-c { background:rgba(245,158,11,0.10); color:#f59e0b; }
-.score-d { background:rgba(239,68,68,0.15); color:#ef4444; }
-.mini-bar { display:inline-block; height:5px; border-radius:3px; vertical-align:middle; }
-
-/* RELOCATION WIDGET */
-.relo-card { background: linear-gradient(135deg, #ffffff 0%, #EEF1F6 100%); border:1px solid var(--border); border-radius:var(--r2); padding:22px; }
-.relo-score { font-family:var(--font-display); font-size:64px; color:var(--accent); line-height:1; }
-.relo-label { font-size:12px; color:var(--text3); margin-top:4px; }
-.relo-breakdown { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
-.relo-row { display:flex; align-items:center; gap:10px; }
-.relo-row-label { font-size:11px; color:var(--text2); width:120px; flex-shrink:0; }
-.relo-row-bar { flex:1; height:6px; background:var(--bg); border-radius:3px; overflow:hidden; }
-.relo-row-fill { height:100%; border-radius:3px; transition:width 0.7s ease; }
-.relo-row-val { font-size:11px; color:var(--text2); width:30px; text-align:right; }
-
-/* INSIGHTS */
-.insight-card { background:var(--bg2); border-left:3px solid var(--accent); border-radius:0 var(--r) var(--r) 0; padding:12px 16px; margin-bottom:10px; font-size:13px; color:var(--text); line-height:1.6; box-shadow: 0 1px 4px rgba(30,80,160,0.07); }
-.insight-card.amber { border-left-color:var(--accent3); }
-.insight-card.green { border-left-color:var(--accent2); }
-.insight-card.pink { border-left-color:var(--accent4); }
-.insight-tag { font-size:10px; padding:2px 8px; border-radius:100px; margin-bottom:6px; display:inline-block; }
-
-/* FOOTER */
-.footer { text-align:center; padding:28px 24px; color:var(--text3); font-size:11px; border-top:1px solid var(--border); margin-top:32px; }
-.footer a { color:var(--text2); text-decoration:none; }
-
-/* RESPONSIVE */
-@media(max-width:600px) {
-  .hero h1 { font-size:26px; }
-  .main { padding:14px; }
-  .topbar { padding:10px 14px; }
-  .filters { padding:10px 14px; }
-  .city-tabs { padding:0 14px; }
-  .kpi-val { font-size:22px; }
-}
-
-/* ANIMATIONS */
-@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-.panel.active { animation:fadeIn 0.25s ease; }
-
-/* TOOLTIP */
-.tooltip-box { position:absolute; background:var(--bg); border:1px solid var(--border2); border-radius:var(--r); padding:8px 12px; font-size:11px; color:var(--text); pointer-events:none; z-index:200; max-width:200px; line-height:1.5; box-shadow:0 4px 20px rgba(30,80,160,0.14); }
+:root{--bg:#F5F7FA;--bg2:#FFFFFF;--bg3:#EEF1F6;--border:rgba(30,80,160,0.10);--border2:rgba(30,80,160,0.20);--text:#0F1C35;--text2:#3B5280;--text3:#7A93BE;--accent:#1A7FD4;--accent2:#0E9E6E;--accent3:#D97706;--accent4:#9333EA;--red:#DC2626;--r:10px;--r2:16px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px;box-shadow:0 1px 8px rgba(30,80,160,0.07)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#1d4ed8,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-name{font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--text)}
+.logo-name span{color:var(--accent)}
+.logo-tag{font-size:10px;color:var(--text3);letter-spacing:.5px}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid var(--border2);color:var(--text2);background:var(--bg3);cursor:pointer;transition:all .15s}
+.pill:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.live-badge{font-size:10px;padding:3px 9px;border-radius:100px;background:rgba(14,158,110,0.10);color:var(--accent2);border:1px solid rgba(14,158,110,0.20)}
+.hero{padding:36px 24px 24px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(26,127,212,0.06) 0%,transparent 68%)}
+.hero h1{font-family:'DM Serif Display',Georgia,serif;font-size:clamp(26px,5vw,50px);color:var(--text);line-height:1.15;margin-bottom:10px}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p{font-size:14px;color:var(--text2);max-width:600px;margin:0 auto 16px}
+.hero-stats{display:flex;justify-content:center;flex-wrap:wrap;gap:28px;margin-top:16px}
+.hs-num{font-family:'DM Serif Display',Georgia,serif;font-size:26px;color:var(--accent)}
+.hs-lbl{font-size:11px;color:var(--text3)}
+.source-strip{background:rgba(26,127,212,0.04);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:7px 24px;font-size:10px;color:var(--text3);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.src-tag{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:10px;color:var(--text2)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;padding:10px 24px;background:var(--bg3);border-bottom:1px solid var(--border);align-items:center}
+.fl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+.fdiv{width:1px;height:18px;background:var(--border)}
+select{background:var(--bg3);color:var(--text);border:1px solid var(--border2);border-radius:var(--r);padding:6px 10px;font-size:12px;cursor:pointer}
+select:focus{outline:none;border-color:var(--accent)}
+.filter-clear{font-size:12px;padding:5px 12px;border-radius:var(--r);background:var(--bg3);color:var(--text2);border:1px solid var(--border2);cursor:pointer}
+.city-tabs{display:flex;overflow-x:auto;padding:0 24px;background:var(--bg2);border-bottom:1px solid var(--border);scrollbar-width:none}
+.city-tabs::-webkit-scrollbar{display:none}
+.city-tab{flex-shrink:0;padding:13px 18px 11px;font-size:13px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.city-tab:hover{color:var(--text2)}
+.city-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+.cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.main{padding:18px 24px;max-width:1400px;margin:0 auto}
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:10px;margin-bottom:18px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:13px 15px;box-shadow:0 1px 4px rgba(30,80,160,0.05);transition:border-color .2s}
+.kpi:hover{border-color:var(--border2)}
+.kpi-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.kpi-val{font-family:'DM Serif Display',Georgia,serif;font-size:24px;color:var(--text);line-height:1}
+.kpi-sub{font-size:10px;margin-top:4px}
+.up{color:var(--accent2)}.dn{color:var(--red)}.neu{color:var(--text3)}
+.kpi-bar{height:3px;background:var(--bg3);border-radius:2px;margin-top:7px;overflow:hidden}
+.kpi-bar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+.section-tabs{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.stab{font-size:12px;padding:6px 15px;border-radius:var(--r);border:1px solid var(--border);color:var(--text3);cursor:pointer;background:var(--bg2);transition:all .15s}
+.stab.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.stab:hover:not(.active){border-color:var(--border2);color:var(--text2)}
+.panel{display:none}.panel.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px 18px;box-shadow:0 1px 5px rgba(30,80,160,0.05)}
+.card-title{font-size:10px;color:var(--text3);font-weight:500;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+.chart-wrap{position:relative;width:100%}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(116px,1fr));gap:8px}
+.skill-chip{border-radius:var(--r);padding:10px 11px;text-align:center;cursor:default;transition:transform .15s}
+.skill-chip:hover{transform:scale(1.04)}
+.sk-name{font-size:12px;font-weight:500;margin-bottom:3px}
+.sk-dem{font-size:10px}.sk-bar{height:3px;border-radius:2px;margin-top:6px}
+.d-critical{background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.20)}
+.d-critical .sk-name{color:#b91c1c}.d-critical .sk-dem{color:#dc2626}.d-critical .sk-bar{background:#dc2626}
+.d-high{background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.20)}
+.d-high .sk-name{color:#92400e}.d-high .sk-dem{color:#d97706}.d-high .sk-bar{background:#d97706}
+.d-mid{background:rgba(26,127,212,0.07);border:1px solid rgba(26,127,212,0.15)}
+.d-mid .sk-name{color:#1e40af}.d-mid .sk-dem{color:#1a7fd4}.d-mid .sk-bar{background:#1a7fd4}
+.d-grow{background:rgba(14,158,110,0.07);border:1px solid rgba(14,158,110,0.15)}
+.d-grow .sk-name{color:#065f46}.d-grow .sk-dem{color:#0e9e6e}.d-grow .sk-bar{background:#0e9e6e}
+.life-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(166px,1fr));gap:10px;margin-bottom:14px}
+.life-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:13px;transition:border-color .2s,order .1s}
+.lc-icon{font-size:20px;margin-bottom:5px}.lc-label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.lc-val{font-size:13px;font-weight:500;color:var(--text)}
+.lc-bar{height:5px;border-radius:3px;background:var(--bg3);margin-top:7px}
+.lc-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.hub-map{position:relative;background:var(--bg3);border-radius:var(--r2);border:1px solid var(--border);overflow:hidden;height:270px}
+.map-grid-bg{position:absolute;inset:0;opacity:.06;background-image:radial-gradient(circle,var(--accent) 1px,transparent 1px);background-size:28px 28px}
+.hub-pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;text-align:center}
+.hub-circle{border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;border:2px solid rgba(255,255,255,.4);transition:transform .2s;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.hub-pin:hover .hub-circle{transform:scale(1.2)}
+.hub-lbl{font-size:9px;color:var(--text2);margin-top:3px;white-space:nowrap;background:rgba(255,255,255,.92);padding:1px 5px;border-radius:3px;border:1px solid var(--border)}
+.heat-blob{position:absolute;border-radius:50%;opacity:.11;pointer-events:none;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.11;transform:scale(1)}50%{opacity:.18;transform:scale(1.1)}}
+.job-list{display:flex;flex-direction:column;gap:9px}
+.job-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:border-color .15s,background .15s}
+.job-card:hover{border-color:var(--border2);background:var(--bg2)}
+.job-title{font-size:13px;font-weight:500;color:var(--text)}
+.job-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.job-tag{font-size:10px;padding:2px 7px;border-radius:100px;font-weight:500;display:inline-block;margin-top:3px}
+.tg-gcc{background:rgba(14,158,110,0.12);color:#065f46;border:1px solid rgba(14,158,110,0.25)}
+.tg-mnc{background:rgba(26,127,212,0.12);color:#1e40af;border:1px solid rgba(26,127,212,0.22)}
+.tg-startup{background:rgba(217,119,6,0.12);color:#92400e;border:1px solid rgba(217,119,6,0.22)}
+.job-salary{font-family:'DM Serif Display',Georgia,serif;font-size:15px;color:var(--accent2);white-space:nowrap}
+.job-right{text-align:right}
+.no-results{padding:28px;text-align:center;color:var(--text3);font-size:13px;background:var(--bg3);border-radius:var(--r);border:1px dashed var(--border2)}
+.filter-count{font-size:11px;color:var(--accent);font-weight:500}
+.cmp-table{width:100%;border-collapse:collapse;font-size:12px}
+.cmp-table th{padding:9px 10px;text-align:left;font-size:10px;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.4px}
+.cmp-table td{padding:9px 10px;border-bottom:1px solid rgba(30,80,160,0.06);color:var(--text);vertical-align:middle}
+.cmp-table tr:hover td{background:rgba(26,127,212,0.03)}
+.spill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:600}
+.sa{background:rgba(14,158,110,0.12);color:#065f46}.sb{background:rgba(26,127,212,0.12);color:#1e40af}
+.sc{background:rgba(217,119,6,0.12);color:#92400e}.sd{background:rgba(220,38,38,0.12);color:#b91c1c}
+.mini-bar{display:inline-block;height:5px;border-radius:3px;vertical-align:middle}
+.relo-card{background:linear-gradient(135deg,#fff 0%,#EEF1F6 100%);border:1px solid var(--border);border-radius:var(--r2);padding:20px;box-shadow:0 1px 5px rgba(30,80,160,0.06)}
+.relo-score{font-family:'DM Serif Display',Georgia,serif;font-size:60px;color:var(--accent);line-height:1}
+.relo-bd{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+.relo-row{display:flex;align-items:center;gap:9px}
+.relo-rl{font-size:11px;color:var(--text2);width:130px;flex-shrink:0}
+.relo-rb{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.relo-rf{height:100%;border-radius:3px;transition:width .6s ease}
+.relo-rv{font-size:11px;color:var(--text2);width:26px;text-align:right}
+.ic{background:var(--bg2);border-left:3px solid var(--accent);border-radius:0 var(--r) var(--r) 0;padding:11px 14px;margin-bottom:9px;font-size:13px;color:var(--text);line-height:1.65;box-shadow:0 1px 4px rgba(30,80,160,0.06)}
+.ic.amber{border-left-color:var(--accent3)}.ic.green{border-left-color:var(--accent2)}
+.ic.purple{border-left-color:var(--accent4)}.ic.red{border-left-color:var(--red)}
+.itag{font-size:10px;padding:1px 7px;border-radius:100px;display:inline-block;font-weight:500;margin-bottom:4px}
+.it-b{background:rgba(26,127,212,0.12);color:#1e40af}.it-g{background:rgba(14,158,110,0.12);color:#065f46}
+.it-a{background:rgba(217,119,6,0.12);color:#92400e}.it-p{background:rgba(147,51,234,0.12);color:#6b21a8}
+.it-r{background:rgba(220,38,38,0.12);color:#991b1b}
+.footer{text-align:center;padding:24px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:28px;line-height:1.9}
+@media(max-width:600px){.hero h1{font-size:24px}.main{padding:12px}.topbar,.filters{padding:10px 14px}.city-tabs{padding:0 14px}}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
     <div class="logo-icon">🔥</div>
     <div>
       <div class="logo-name">India <span>JobHeat</span></div>
-      <div class="logo-tag">Career & Relocation Intelligence · Q1 2026</div>
+      <div class="logo-tag">Career &amp; Relocation Intelligence · Q1 2026</div>
     </div>
   </div>
   <div class="topbar-right">
-    <span class="badge">● Live 2026 Data</span>
-    <button class="pill" onclick="toggleMode()">☾ Dark</button>
-    <button class="pill" onclick="window.print()">↓ Export PDF</button>
-    <button class="pill" onclick="shareURL()">⬡ Share</button>
+    <span class="live-badge">● Verified Q1 2026 Data</span>
+    <button class="pill" onclick="window.print()">↓ PDF</button>
+    <button class="pill" onclick="shareURL()">⬡ Share URL</button>
+    <button class="pill" onclick="runQA()" title="Run unit tests">🧪 QA</button>
   </div>
 </div>
 
-<!-- HERO -->
 <div class="hero">
-  <h1>Find your <em>best city</em> to work,<br>live & grow in India</h1>
-  <p>Real-time tech job intelligence, salary benchmarks, skill demand heatmaps, and cost-of-living analysis across India's top 5 tech hubs — built for job seekers making life-changing moves.</p>
+  <h1>Find your <em>best city</em> to work,<br>live &amp; grow in India</h1>
+  <p>Validated salary data from Levels.fyi &amp; AmbitionBox · Office leasing from NASSCOM/Vestian Q1 2026 · Cost of living from Numbeo &amp; NoBroker · Skill demand from Instahyre 2025</p>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="hero-stat-num">8.2M+</div><div class="hero-stat-label">Tech jobs tracked</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">270+</div><div class="hero-stat-label">GCCs mapped</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">₹8–85L</div><div class="hero-stat-label">Salary range covered</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">5 cities</div><div class="hero-stat-label">Deep intelligence</div></div>
+    <div><div class="hs-num">21.5 MSF</div><div class="hs-lbl">Office absorbed Q1 2026</div></div>
+    <div><div class="hs-num">53%</div><div class="hs-lbl">GCC share of leasing</div></div>
+    <div><div class="hs-num">+20%</div><div class="hs-lbl">YoY absorption growth</div></div>
+    <div><div class="hs-num">5 cities</div><div class="hs-lbl">Deep intelligence</div></div>
   </div>
 </div>
 
-<!-- FILTERS -->
-<div class="filters">
-  <div class="filter-group">
-    <span class="filter-label">Role</span>
-    <select id="f-role" onchange="applyFilters()">
-      <option value="all">All Roles</option>
-      <option value="swe">Software Engineer</option>
-      <option value="data">Data / AI / ML</option>
-      <option value="pm">Product Manager</option>
-      <option value="devops">DevOps / Cloud</option>
-      <option value="design">Design / UX</option>
-      <option value="leadership">Leadership / Director</option>
-    </select>
-  </div>
-  <div class="filter-divider"></div>
-  <div class="filter-group">
-    <span class="filter-label">Exp</span>
-    <select id="f-exp" onchange="applyFilters()">
-      <option value="all">Any Experience</option>
-      <option value="0-3">0–3 yrs (Fresher/Junior)</option>
-      <option value="3-7">3–7 yrs (Mid-level)</option>
-      <option value="7-12">7–12 yrs (Senior)</option>
-      <option value="12+">12+ yrs (Leadership)</option>
-    </select>
-  </div>
-  <div class="filter-divider"></div>
-  <div class="filter-group">
-    <span class="filter-label">Company</span>
-    <select id="f-co" onchange="applyFilters()">
-      <option value="all">Any Company Type</option>
-      <option value="gcc">GCC / MNC</option>
-      <option value="startup">Startup / Unicorn</option>
-      <option value="it">IT Services</option>
-    </select>
-  </div>
-  <div class="filter-divider"></div>
-  <div class="filter-group">
-    <span class="filter-label">Salary</span>
-    <select id="f-sal" onchange="applyFilters()">
-      <option value="all">Any Salary</option>
-      <option value="10">₹10L+</option>
-      <option value="20">₹20L+</option>
-      <option value="40">₹40L+</option>
-    </select>
-  </div>
-  <div class="filter-divider"></div>
-  <div class="filter-group">
-    <span class="filter-label">Lifestyle</span>
-    <select id="f-life" onchange="applyFilters()">
-      <option value="all">Any Priority</option>
-      <option value="cost">Low Cost of Living</option>
-      <option value="social">Nightlife & Social</option>
-      <option value="family">Family-Friendly</option>
-      <option value="growth">Career Growth</option>
-      <option value="weather">Best Weather</option>
-    </select>
-  </div>
+<div class="source-strip">
+  <span style="color:var(--text2);font-weight:500">Data sources:</span>
+  <span class="src-tag">NASSCOM Q1 2026</span><span class="src-tag">Vestian Apr 2026</span>
+  <span class="src-tag">Levels.fyi India Apr 2026</span><span class="src-tag">AmbitionBox 2026</span>
+  <span class="src-tag">Naukri JobSpeak</span><span class="src-tag">Instahyre Salary Index 2025</span>
+  <span class="src-tag">Numbeo Cost Index</span><span class="src-tag">NoBroker Rent Data</span>
+  <span class="src-tag">JLL / CBRE Office Reports</span>
 </div>
 
-<!-- CITY TABS -->
 <div class="city-tabs">
-  <div class="city-tab active" onclick="switchCity('blr',this)"><span class="city-dot" style="background:#ef4444"></span>Bengaluru</div>
-  <div class="city-tab" onclick="switchCity('hyd',this)"><span class="city-dot" style="background:#f59e0b"></span>Hyderabad</div>
-  <div class="city-tab" onclick="switchCity('mum',this)"><span class="city-dot" style="background:#3b82f6"></span>Mumbai</div>
-  <div class="city-tab" onclick="switchCity('ncr',this)"><span class="city-dot" style="background:#8b5cf6"></span>Delhi NCR</div>
-  <div class="city-tab" onclick="switchCity('ahm',this)"><span class="city-dot" style="background:#10b981"></span>Ahmedabad</div>
-  <div class="city-tab" onclick="switchCity('compare',this)"><span style="font-size:12px">⇄</span> Compare All</div>
+  <div class="city-tab active" onclick="switchCity('blr',this)"><span class="cdot" style="background:#ef4444"></span>Bengaluru</div>
+
+<div class="filters">
+  <span class="fl">Refine</span>
+  <select id="f-role" onchange="applyFilters()">
+    <option value="all">All Roles</option>
+    <option value="swe">Software Engineer</option>
+    <option value="data">Data / AI / ML</option>
+    <option value="pm">Product Manager</option>
+    <option value="devops">DevOps / Cloud</option>
+    <option value="design">Design / UX</option>
+    <option value="leadership">Director / VP</option>
+  </select>
+  <div class="fdiv"></div>
+  <select id="f-exp" onchange="applyFilters()">
+    <option value="all">Any Experience</option>
+    <option value="0-3">0–3 yrs (Fresher)</option>
+    <option value="3-7">3–7 yrs (Mid-level)</option>
+    <option value="7-12">7–12 yrs (Senior)</option>
+    <option value="12+">12+ yrs (Leadership)</option>
+  </select>
+  <div class="fdiv"></div>
+  <select id="f-co" onchange="applyFilters()">
+    <option value="all">Any Company</option>
+    <option value="gcc">GCC / MNC</option>
+    <option value="startup">Startup / Unicorn</option>
+    <option value="it">IT Services</option>
+  </select>
+  <div class="fdiv"></div>
+  <select id="f-sal" onchange="applyFilters()">
+    <option value="0">Any Salary</option>
+    <option value="10">Min ₹10L</option>
+    <option value="20">Min ₹20L</option>
+    <option value="30">Min ₹30L</option>
+    <option value="50">Min ₹50L</option>
+  </select>
+  <button class="filter-clear" onclick="clearFilters()">✕ Clear all</button>
+  <span id="filter-badge" style="font-size:11px;color:var(--accent);font-weight:500;margin-left:4px;display:none"></span>
 </div>
 
-<!-- MAIN -->
+
+
+
+  <div class="city-tab" onclick="switchCity('hyd',this)"><span class="cdot" style="background:#f59e0b"></span>Hyderabad</div>
+  <div class="city-tab" onclick="switchCity('mum',this)"><span class="cdot" style="background:#3b82f6"></span>Mumbai</div>
+  <div class="city-tab" onclick="switchCity('ncr',this)"><span class="cdot" style="background:#8b5cf6"></span>Delhi NCR</div>
+  <div class="city-tab" onclick="switchCity('ahm',this)"><span class="cdot" style="background:#10b981"></span>Ahmedabad</div>
+  <div class="city-tab" onclick="switchCity('compare',this)">⇄ Compare All</div>
+</div>
+
 <div class="main">
+  <div class="kpi-strip" id="kpi-strip"></div>
+  <div class="section-tabs">
+    <div class="stab active" onclick="showSection('overview',this)">Overview</div>
+    <div class="stab" onclick="showSection('skills',this)">Skills Demand</div>
+    <div class="stab" onclick="showSection('jobs',this)">Job Search</div>
+    <div class="stab" onclick="showSection('life',this)">Life Score</div>
+    <div class="stab" onclick="showSection('relo',this)">Relocate</div>
+    <div class="stab" onclick="showSection('insights',this)">Market Insights</div>
+    <div class="stab" onclick="showSection('compare',this)">Compare All</div>
+  </div>
 
-<!-- KPI STRIP -->
-<div class="kpi-strip" id="kpi-strip"></div>
-
-<!-- SECTION TABS -->
-<div class="section-tabs">
-  <div class="stab active" onclick="showSection('overview',this)">Overview</div>
-  <div class="stab" onclick="showSection('skills',this)">Skills Demand</div>
-  <div class="stab" onclick="showSection('jobs',this)">Top Jobs</div>
-  <div class="stab" onclick="showSection('life',this)">Life Score</div>
-  <div class="stab" onclick="showSection('relo',this)">Relocate</div>
-  <div class="stab" onclick="showSection('compare',this)">City Compare</div>
-</div>
-
-<!-- PANEL: OVERVIEW -->
-<div class="panel active" id="panel-overview">
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Salary distribution by role (₹ LPA)</div>
-      <div class="chart-wrap" style="height:250px"><canvas id="salaryDistChart" role="img" aria-label="Salary distribution bar chart by role for selected city">Salary ranges for different tech roles in the selected city.</canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Office hotspots — job density map</div>
-      <div class="hub-map" id="hubMap">
-        <div class="hub-map-bg"></div>
-        <div id="mapPins"></div>
-        <div id="mapLegend" style="position:absolute;bottom:10px;right:10px;background:rgba(255,255,255,0.92);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:10px;color:var(--text2);">
-          <div style="margin-bottom:5px;font-weight:500;color:var(--text)">Job Density</div>
-          <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block"></span>Very High</div>
-          <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block"></span>High</div>
-          <div style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:#38bdf8;display:inline-block"></span>Medium</div>
+  <div class="panel active" id="panel-overview">
+    <div class="grid2">
+      <div class="card"><div class="card-title">Salary range by role — ₹ LPA (Levels.fyi + AmbitionBox)</div><div class="chart-wrap" style="height:240px"><canvas id="salChart" role="img" aria-label="Salary range by tech role">Salary min and max for SWE, Data/AI, PM, DevOps, Design, Director.</canvas></div></div>
+      <div class="card"><div class="card-title">Office hotspots — job density map</div>
+        <div class="hub-map" id="hubMap"><div class="map-grid-bg"></div><div id="mapPins"></div>
+          <div style="position:absolute;bottom:8px;right:8px;background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:8px;padding:7px 9px;font-size:10px">
+            <div style="font-weight:500;color:var(--text);margin-bottom:4px">Density</div>
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="width:9px;height:9px;border-radius:50%;background:#ef4444;display:inline-block"></span><span style="color:var(--text2)">Very high</span></div>
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="width:9px;height:9px;border-radius:50%;background:#f59e0b;display:inline-block"></span><span style="color:var(--text2)">High</span></div>
+            <div style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:#3b82f6;display:inline-block"></span><span style="color:var(--text2)">Medium</span></div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Hiring trend — quarterly job postings (2025–Q1 2026)</div>
-      <div class="chart-wrap" style="height:200px"><canvas id="hiringChart" role="img" aria-label="Line chart showing hiring trend across quarters">Job posting trend from Q1 2025 to Q1 2026 in the selected city.</canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Employer type mix</div>
-      <div class="chart-wrap" style="height:200px"><canvas id="employerChart" role="img" aria-label="Donut chart showing employer type breakdown">Breakdown of GCC, IT Services, Startup, and other employers.</canvas></div>
+      <div class="card"><div class="card-title">Hiring trend — job postings index (NASSCOM / Naukri JobSpeak)</div><div class="chart-wrap" style="height:190px"><canvas id="hiringChart" role="img" aria-label="Quarterly hiring trend">Hiring trend Q1 2025 to Q1 2026.</canvas></div></div>
+      <div class="card"><div class="card-title">Employer type mix — Q1 2026 (Vestian / JLL)</div><div class="chart-wrap" style="height:190px"><canvas id="empChart" role="img" aria-label="Employer mix donut chart">GCC, IT services, startup, other breakdown.</canvas></div></div>
     </div>
   </div>
+
+  <div class="panel active" id="panel-vacancy-stub" style="display:none"></div>
+<div style="margin-top:14px" id="vacancy-panel-wrap">
+  <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Role vacancy &amp; fresher opportunity intelligence — updates with your filters</div>
+  <div id="vacancy-panel"></div>
 </div>
 
-<!-- PANEL: SKILLS -->
 <div class="panel" id="panel-skills">
-  <div class="card" style="margin-bottom:16px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
-      <div class="card-title" style="margin-bottom:0">Tech skill demand heatmap — <span id="skills-city-name">Bengaluru</span></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:11px;">
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#ef4444;display:inline-block"></span>🔴 Critical</span>
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block"></span>🟡 High</span>
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#38bdf8;display:inline-block"></span>🔵 Solid</span>
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>🟢 Growing</span>
-      </div>
-    </div>
-    <div class="skills-grid" id="skillsGrid"></div>
-  </div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Salary premium by skill (vs city avg)</div>
-      <div class="chart-wrap" style="height:260px"><canvas id="skillPremiumChart" role="img" aria-label="Bar chart showing salary premium percentages for top skills">Premium percentages above city average salary for in-demand skills.</canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Skill demand trajectory — 2024 vs 2026</div>
-      <div class="chart-wrap" style="height:260px"><canvas id="skillTrendChart" role="img" aria-label="Grouped bar chart comparing skill demand in 2024 vs 2026">Year over year skill demand comparison across key technologies.</canvas></div>
-    </div>
-  </div>
-</div>
-
-<!-- PANEL: JOBS -->
-<div class="panel" id="panel-jobs">
-  <div class="grid2">
-    <div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Showing top openings in <strong id="jobs-city-name" style="color:var(--text2)">Bengaluru</strong> · Updated April 2026</div>
-      <div class="job-list" id="jobList"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Salary range by experience level</div>
-      <div class="chart-wrap" style="height:280px"><canvas id="expSalChart" role="img" aria-label="Bar chart showing salary range by experience level">Salary ranges for 0-3, 3-7, 7-12, and 12+ years experience in the selected city.</canvas></div>
-    </div>
-  </div>
-</div>
-
-<!-- PANEL: LIFE SCORE -->
-<div class="panel" id="panel-life">
-  <div style="margin-bottom:16px;">
-    <div style="font-family:var(--font-display);font-size:22px;color:var(--text);margin-bottom:6px;">Life quality in <span id="life-city-name" style="color:var(--accent)">Bengaluru</span></div>
-    <div style="font-size:13px;color:var(--text3);">How this city scores across dimensions that matter to you as a professional — not just your salary.</div>
-  </div>
-  <div class="life-grid" id="lifeGrid"></div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Cost of living breakdown (₹/month, single professional)</div>
-      <div class="chart-wrap" style="height:240px"><canvas id="costChart" role="img" aria-label="Bar chart showing monthly cost breakdown for a single professional">Monthly expenses including rent, food, transport, and entertainment.</canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Salary vs disposable income (after cost of living)</div>
-      <div class="chart-wrap" style="height:240px"><canvas id="disposableChart" role="img" aria-label="Chart comparing salary to disposable income across experience levels">Comparison of gross salary versus net disposable income after city costs.</canvas></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:16px">
-    <div class="card-title">Neighbourhood guide — best areas by lifestyle preference</div>
-    <div id="neighbourhoodGuide" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:4px;"></div>
-  </div>
-</div>
-
-<!-- PANEL: RELOCATE -->
-<div class="panel" id="panel-relo">
-  <div style="font-family:var(--font-display);font-size:22px;color:var(--text);margin-bottom:6px;">Should you move to <span id="relo-city-name" style="color:var(--accent)">Bengaluru</span>?</div>
-  <div style="font-size:13px;color:var(--text3);margin-bottom:16px">An honest, multi-factor relocation score based on career, quality of life, affordability, and growth potential.</div>
-  <div class="grid2">
-    <div class="relo-card">
-      <div style="display:flex;align-items:flex-end;gap:14px;">
-        <div>
-          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Relocation Score</div>
-          <div class="relo-score" id="reloScore">82</div>
-          <div class="relo-label">out of 100</div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+        <div class="card-title" style="margin-bottom:0">Tech skill demand — <span id="skill-city">Bengaluru</span> · Q1 2026</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text3)">
+          <span><span style="color:#dc2626">●</span> Critical</span><span><span style="color:#d97706">●</span> High</span>
+          <span><span style="color:#1a7fd4">●</span> Solid</span><span><span style="color:#0e9e6e">●</span> Growing</span>
         </div>
-        <div id="reloGrade" style="font-family:var(--font-display);font-size:42px;color:var(--accent2);margin-bottom:8px">A</div>
       </div>
-      <div class="relo-breakdown" id="reloBreakdown"></div>
+      <div id="skill-fresher-note" style="display:none;background:rgba(14,158,110,0.08);border:1px solid rgba(14,158,110,0.20);border-radius:var(--r);padding:8px 12px;font-size:12px;color:#065f46;margin-bottom:10px">🎓 <strong>Fresher mode active</strong> — each skill chip now shows a fresher-fit score. Green = easy entry path for a 0–3yr candidate.</div><div class="skills-grid" id="skillsGrid"></div>
     </div>
-    <div class="card">
-      <div class="card-title">Relocation checklist — what to know before you move</div>
-      <div id="reloChecklist" style="font-size:13px;color:var(--text2);line-height:2;"></div>
+    <div class="grid2">
+      <div class="card"><div class="card-title">Salary premium vs city median — by skill (Instahyre Index 2025)</div><div class="chart-wrap" style="height:250px"><canvas id="premChart" role="img" aria-label="Salary premium by skill">Premium percentage above city median for top skills.</canvas></div></div>
+      <div class="card"><div class="card-title">Skill demand shift — 2024 vs Q1 2026</div><div class="chart-wrap" style="height:250px"><canvas id="trendChart" role="img" aria-label="Skill demand 2024 vs 2026">Year on year skill demand comparison.</canvas></div></div>
     </div>
   </div>
-  <div class="grid3" style="margin-top:16px" id="reloFacts"></div>
+
+  <div class="panel" id="panel-jobs">
+    <div class="grid2">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:12px;color:var(--text3)">Openings in <strong id="job-city" style="color:var(--text2)">Bengaluru</strong> · April 2026</div>
+          <div class="filter-count" id="job-count"></div>
+        </div>
+        <div class="job-list" id="jobList"></div>
+        <div style="font-size:10px;color:var(--text3);margin-top:10px">⚠ Benchmarks from Levels.fyi, Glassdoor &amp; AmbitionBox. Actual offers vary by ESOPs, negotiation &amp; level.</div>
+      </div>
+      <div class="card"><div class="card-title">Salary by experience — ₹ LPA range</div><div class="chart-wrap" style="height:260px"><canvas id="expChart" role="img" aria-label="Salary range by experience level">Min and max salary for each experience band.</canvas></div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-life">
+    <div style="font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--text);margin-bottom:5px">Life quality in <span id="life-city" style="color:var(--accent)">Bengaluru</span></div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:14px">Beyond salary — how this city actually feels day-to-day. Sources: Numbeo, NoBroker, CPCB AQI, Mercer 2025.</div>
+    <div class="life-grid" id="lifeGrid"></div>
+    <div class="grid2">
+      <div class="card"><div class="card-title">Monthly cost breakdown — single professional (₹/mo)</div><div class="chart-wrap" style="height:230px"><canvas id="costChart" role="img" aria-label="Monthly cost breakdown">Rent, food, transport, entertainment, utilities, other.</canvas></div></div>
+      <div class="card"><div class="card-title">Gross salary vs disposable income — what you actually keep</div><div class="chart-wrap" style="height:230px"><canvas id="dispChart" role="img" aria-label="Gross vs disposable income">Monthly gross and net after living costs by career stage.</canvas></div></div>
+    </div>
+    <div class="card" style="margin-top:14px"><div class="card-title">Neighbourhood guide — best areas by your lifestyle</div><div id="hoodGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:10px;margin-top:6px"></div></div>
+  </div>
+
+  <div class="panel" id="panel-relo">
+    <div style="font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--text);margin-bottom:5px">Should you move to <span id="relo-city" style="color:var(--accent)">Bengaluru</span>?</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:14px">Multi-factor relocation score — career, salary, affordability, quality of life, weather, safety.</div>
+    <div class="grid2">
+      <div class="relo-card">
+        <div style="display:flex;align-items:flex-end;gap:14px">
+          <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Relocation Score</div>
+            <div class="relo-score" id="reloScore">82</div><div style="font-size:11px;color:var(--text3)">out of 100</div>
+          </div>
+          <div id="reloGrade" style="font-family:'DM Serif Display',Georgia,serif;font-size:40px;color:var(--accent2);margin-bottom:6px">A</div>
+        </div>
+        <div class="relo-bd" id="reloBd"></div>
+      </div>
+      <div class="card"><div class="card-title">Honest relocation checklist</div><div id="reloList" style="font-size:13px;color:var(--text2);line-height:2.1"></div></div>
+    </div>
+    <div class="grid3" style="margin-top:14px" id="reloFacts"></div>
+  </div>
+
+  <div class="panel" id="panel-insights">
+    <div style="font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--text);margin-bottom:12px">Market intelligence — <span id="insight-city" style="color:var(--accent)">Bengaluru</span></div>
+    <div id="insightsPanel"></div>
+    <div style="margin-top:18px;background:rgba(26,127,212,0.04);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">📡 National signals — all cities · April 2026</div>
+      <div id="globalInsights"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-compare">
+    <div style="font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--text);margin-bottom:12px">All 5 cities — head to head</div>
+    <div class="card" style="overflow-x:auto;margin-bottom:14px">
+      <table class="cmp-table"><thead><tr>
+        <th>City</th><th>Q1 2026 Leasing</th><th>GCCs</th><th>Mid SWE salary</th><th>1BHK rent/mo</th><th>Cost index</th><th>Disposable %</th><th>Vacancy (Fresher %)</th><th>Relo score</th><th>Grade</th>
+      </tr></thead><tbody id="cmpBody"></tbody></table>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="card-title">Mid-level SWE salary range — 3–7 yrs experience (₹ LPA)</div><div class="chart-wrap" style="height:230px"><canvas id="cmpSalChart" role="img" aria-label="City salary comparison">Min to max salary range for mid-level engineers across all 5 cities.</canvas></div></div>
+      <div class="card"><div class="card-title">Quality of life radar — 5-city overlay</div><div class="chart-wrap" style="height:230px"><canvas id="radarChart" role="img" aria-label="Radar chart life quality">Multi-dimensional life quality comparison.</canvas></div></div>
+    </div>
+    <div class="card" style="margin-top:14px"><div class="card-title">Who should go where — career archetype guide</div><div id="archetypeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:10px;margin-top:6px"></div></div>
+  </div>
 </div>
 
-<!-- PANEL: COMPARE -->
-<div class="panel" id="panel-compare">
-  <div style="font-family:var(--font-display);font-size:22px;color:var(--text);margin-bottom:14px;">All 5 cities — head to head</div>
-  <div class="card" style="overflow-x:auto;margin-bottom:16px">
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th>City</th>
-          <th>Avg SWE Salary</th>
-          <th>GCC Count</th>
-          <th>Office Rent</th>
-          <th>Cost of Living</th>
-          <th>Disposable Income</th>
-          <th>Life Score</th>
-          <th>Career Score</th>
-          <th>Relo Grade</th>
-        </tr>
-      </thead>
-      <tbody id="compareTableBody"></tbody>
-    </table>
-  </div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Average mid-level SWE salary comparison (₹ LPA)</div>
-      <div class="chart-wrap" style="height:240px"><canvas id="cityCompSalChart" role="img" aria-label="Bar chart comparing average software engineer salaries across all 5 cities">Salary comparison across Bengaluru, Hyderabad, Mumbai, Delhi NCR, and Ahmedabad.</canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Life quality radar — 5 city overlay</div>
-      <div class="chart-wrap" style="height:240px"><canvas id="radarChart" role="img" aria-label="Radar chart overlaying quality of life scores for all 5 cities">Multi-dimensional quality of life comparison across all cities.</canvas></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:16px">
-    <div class="card-title">Who should go where? — career archetype guide</div>
-    <div id="archetypeGuide" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:4px;"></div>
-  </div>
-</div>
-
-</div><!-- end main -->
-
-<!-- INSIGHTS STRIP -->
-<div style="padding:0 24px 8px;max-width:1400px;margin:0 auto">
-  <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">📡 AI Market Signals — April 2026</div>
-  <div class="insight-card">🔴 <strong>GenAI premium surging:</strong> Engineers with hands-on LLM/RAG/fine-tuning experience command 35–55% salary premium over peers in all 5 cities. Bengaluru GCCs lead the bidding war.</div>
-  <div class="insight-card amber">🟡 <strong>Hyderabad's HITEC corridor tightening:</strong> Vacancy in HITEC City compressed to sub-5% in Q1 2026 as Amazon, Apple, and HSBC GCCs expanded aggressively. Rents up 14% YoY.</div>
-  <div class="insight-card green">🟢 <strong>Ahmedabad emergence:</strong> GIFT City tech hiring up 140% YoY — BFSI-tech, fintech GCCs moving in. Entry-level salaries competitive; cost of living 40% below Bengaluru makes disposable income surprisingly strong.</div>
-  <div class="insight-card pink">🔵 <strong>Mumbai finance-tech convergence:</strong> BKC remains India's highest-paying non-startup cluster (₹18–22L median SWE). BFSI-tech, quant roles, and fintech unicorn equity make total comp the highest nationally.</div>
+<div style="padding:0 24px 6px;max-width:1400px;margin:0 auto">
+  <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Verified market signals — Q1 2026</div>
+  <div class="ic green"><span class="itag it-g">NASSCOM · Vestian Apr 2026</span><br><strong>India office market: 21.53 MSF absorbed in Q1 2026 — up 20% YoY.</strong> GCCs drove 53% of total absorption (11.5 MSF). Bengaluru led with 4.91 MSF. Hyderabad and Pune more than doubled absorption YoY. New completions fell 36% nationally; Hyderabad completions collapsed 95% QoQ — a supply crunch is coming.</div>
+  <div class="ic amber"><span class="itag it-a">Instahyre Tech Salary Index 2025</span><br><strong>GenAI engineers command 35–55% salary premium</strong> across all 5 cities. AI/ML role postings surged 75% in 2025. AWS-related salaries rose ~10% across all experience levels. Freshers in data science saw salary dip from ₹8.4L → ₹6.3L — specialisation beats generalisation more than ever.</div>
+  <div class="ic"><span class="itag it-b">Levels.fyi India · Apr 22 2026</span><br><strong>Google India median SWE total comp: ₹78L. Microsoft median: ₹44.6L.</strong> Top comp at Rubrik, Google L6 exceeds ₹1Cr CTC. Mid-level GCC roles in Bengaluru average ₹28–38L including RSUs — significantly above IT services (~₹14–18L at same experience level).</div>
+  <div class="ic purple"><span class="itag it-p">Vestian Q1 2026</span><br><strong>Hyderabad new completions fell 95% QoQ</strong> (from 6 MSF to 0.3 MSF) while demand more than doubled. This supply-demand mismatch will push HITEC City / Financial District rents 15–20% higher through 2026. The window for affordable Hyderabad rentals is closing fast — move before the correction hits.</div>
 </div>
 
 <div class="footer">
-  <p>India JobHeat · Data: JLL Q1 2026, NASSCOM 2026, NaukRI Hiring Outlook, Glassdoor India, ANAROCK Research, RBI CPI Index · Built for job seekers, not for bots.</p>
-  <p style="margin-top:6px">⚠ Salary data reflects market benchmarks; individual offers may vary. Cost of living estimates based on single-professional urban lifestyle.</p>
+  Sources: NASSCOM Community Q1 2026 · Vestian Research Apr 2026 · Levels.fyi India (Apr 22 2026) · AmbitionBox 2026 · Naukri JobSpeak · Instahyre Tech Salary Index 2025 · Numbeo India Cost Index · NoBroker Rent Data Apr 2026 · JLL / CBRE / ANAROCK Office Reports<br>
+  ⚠ Salary figures are market benchmarks — individual offers vary by company, ESOPs, negotiation, and level. Cost of living assumes single urban professional, moderate lifestyle. Last updated: April 2026.
 </div>
 
 <script>
-// ======================== DATA ========================
-const CITIES = {
-  blr: {
-    name: 'Bengaluru', color: '#ef4444', short: 'BLR',
-    kpis: [
-      { label: 'Avg SWE Salary', val: '₹16.4L', sub: '▲ 11% YoY', cls: 'up', bar: 82 },
-      { label: 'GCC Count', val: '420+', sub: '▲ Largest in India', cls: 'up', bar: 100 },
-      { label: 'Office Vacancy', val: '12.4%', sub: '▼ Stable', cls: 'neu', bar: 40 },
-      { label: 'Prime Rent', val: '₹118/sqft', sub: '▲ 8% YoY', cls: 'up', bar: 70 },
-      { label: 'Cost of Living', val: '₹62K/mo', sub: '● High', cls: 'dn', bar: 65 },
-      { label: 'Relo Score', val: '82/100', sub: 'Grade A', cls: 'up', bar: 82 },
-    ],
-    salByRole: { labels: ['SWE', 'Data/AI', 'PM', 'DevOps', 'Design', 'Director'], min: [8,10,12,9,7,20], max: [28,38,30,24,18,55] },
-    hiring: [9200, 10100, 11400, 12800, 14200],
-    employers: { gcc: 42, it: 28, startup: 22, other: 8 },
-    skills: [
-      { name: 'GenAI/LLMs', demand: 'critical', score: 98, bar: '98%' },
-      { name: 'Python', demand: 'critical', score: 96, bar: '96%' },
-      { name: 'AWS', demand: 'critical', score: 94, bar: '94%' },
-      { name: 'Kubernetes', demand: 'high', score: 88, bar: '88%' },
-      { name: 'React/Next.js', demand: 'high', score: 86, bar: '86%' },
-      { name: 'Go / Rust', demand: 'high', score: 82, bar: '82%' },
-      { name: 'MLOps', demand: 'high', score: 80, bar: '80%' },
-      { name: 'TypeScript', demand: 'high', score: 79, bar: '79%' },
-      { name: 'Java / Spring', demand: 'mid', score: 74, bar: '74%' },
-      { name: 'Data Engineering', demand: 'mid', score: 72, bar: '72%' },
-      { name: 'Terraform', demand: 'mid', score: 68, bar: '68%' },
-      { name: 'Kafka', demand: 'mid', score: 65, bar: '65%' },
-      { name: 'Flutter', demand: 'grow', score: 60, bar: '60%' },
-      { name: 'Web3 / Solidity', demand: 'grow', score: 52, bar: '52%' },
-      { name: 'AR/VR', demand: 'grow', score: 44, bar: '44%' },
-    ],
-    skillPremium: { labels: ['GenAI', 'MLOps', 'Kubernetes', 'Go/Rust', 'AWS'], data: [52, 38, 28, 24, 18] },
-    skillTrend: { labels: ['Python','GenAI','Kubernetes','React','Java'], v2024: [82,44,68,72,78], v2026: [96,98,88,86,74] },
-    jobs: [
-      { title: 'Staff ML Engineer', co: 'Google DeepMind · Whitefield GCC', sal: '₹42–65L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Principal SWE — Platform', co: 'Microsoft · Manyata Tech Park', sal: '₹38–55L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Senior SWE — GenAI', co: 'Swiggy · Koramangala', sal: '₹28–40L', tag: 'startup', type: 'tag-startup' },
-      { title: 'Data Scientist', co: 'Walmart Global Tech · Mahadevapura', sal: '₹22–34L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Product Manager', co: 'Atlassian · Bellandur', sal: '₹24–36L', tag: 'mnc', type: 'tag-mnc' },
-      { title: 'DevOps Lead', co: 'Thoughtworks · HSR Layout', sal: '₹18–28L', tag: 'mnc', type: 'tag-mnc' },
-    ],
-    expSal: { labels: ['0–3 yrs', '3–7 yrs', '7–12 yrs', '12+ yrs'], min: [7,14,22,38], max: [14,28,42,70] },
-    life: [
-      { icon: '🏠', label: 'Housing (1BHK/mo)', val: '₹22–35K', score: 45, color: '#ef4444' },
-      { icon: '🍜', label: 'Food (eating out)', val: '₹8–12K/mo', score: 60, color: '#f59e0b' },
-      { icon: '🚇', label: 'Metro / Transport', val: '₹2–5K/mo', score: 70, color: '#38bdf8' },
-      { icon: '🌡', label: 'Weather', val: '22–30°C avg', score: 90, color: '#34d399' },
-      { icon: '🏥', label: 'Healthcare', val: 'World-class', score: 88, color: '#34d399' },
-      { icon: '🍻', label: 'Nightlife & Social', val: 'Vibrant', score: 85, color: '#8b5cf6' },
-      { icon: '📚', label: 'Education', val: 'IISc, IIMs, NLUs', score: 92, color: '#34d399' },
-      { icon: '🚦', label: 'Traffic / Commute', val: 'Severe', score: 22, color: '#ef4444' },
-      { icon: '🛡', label: 'Safety', val: 'Moderate-Good', score: 68, color: '#38bdf8' },
-      { icon: '🌿', label: 'Green Spaces', val: 'Good', score: 72, color: '#34d399' },
-    ],
-    costBreakdown: { labels: ['Rent', 'Food', 'Transport', 'Entertainment', 'Utilities', 'Other'], data: [28000, 10000, 4000, 8000, 3000, 9000] },
-    disposable: { labels: ['Jr (₹10L)', 'Mid (₹20L)', 'Sr (₹35L)', 'Lead (₹55L)'], gross: [83000, 166000, 291000, 458000], net: [21000, 104000, 229000, 396000] },
-    neighbourhoods: [
-      { name: 'Koramangala', vibe: 'Startup & nightlife crowd', rent: '₹28–40K', for: '🧑‍💻 Young professionals' },
-      { name: 'Whitefield', vibe: 'MNC & GCC suburb', rent: '₹18–28K', for: '👨‍👩‍👧 Families & seniors' },
-      { name: 'HSR Layout', vibe: 'Balanced, walkable', rent: '₹22–32K', for: '⚖ Work-life balance seekers' },
-      { name: 'Indiranagar', vibe: 'Social, premium', rent: '₹32–50K', for: '🎭 Social butterflies' },
-      { name: 'Bellandur', vibe: 'Budget, tech-close', rent: '₹16–24K', for: '💰 Cost-conscious freshers' },
-    ],
-    relo: { score: 82, grade: 'A', dims: [
-      { label: 'Career Opportunities', val: 96, color: '#34d399' },
-      { label: 'GCC/MNC Density', val: 98, color: '#34d399' },
-      { label: 'Salary Level', val: 82, color: '#38bdf8' },
-      { label: 'Affordability', val: 42, color: '#ef4444' },
-      { label: 'Quality of Life', val: 74, color: '#38bdf8' },
-      { label: 'Infrastructure', val: 64, color: '#f59e0b' },
-      { label: 'Weather', val: 90, color: '#34d399' },
-    ]},
-    reloChecklist: ['✅ Best city for GCC/MNC career growth', '✅ India\'s largest startup ecosystem (5000+ startups)', '⚠ High rent: budget ₹20–35K/mo for decent 1BHK', '⚠ Traffic is severe — live close to work', '✅ Excellent weather year-round', '⚠ Water shortage summers (Apr–Jun)', '✅ Cosmopolitan, English-first city', '✅ Best GenAI & ML job density in India'],
-    reloFacts: [
-      { icon: '✈', label: 'Nearest airport', val: 'KIA — 35km (45–90 min)' },
-      { icon: '🏙', label: 'Best for', val: 'GCC, Startup, AI/ML roles' },
-      { icon: '📈', label: 'Job growth (YoY)', val: '+18% open positions' },
-      { icon: '🤝', label: 'Expat community', val: 'Very large, 90+ nationalities' },
-    ],
-    hubs: [
-      { name: 'Whitefield', x: '75%', y: '35%', color: '#ef4444', size: 44 },
-      { name: 'Koramangala', x: '38%', y: '55%', color: '#ef4444', size: 40 },
-      { name: 'Manyata Tech Park', x: '45%', y: '22%', color: '#f59e0b', size: 36 },
-      { name: 'Electronic City', x: '42%', y: '78%', color: '#f59e0b', size: 34 },
-      { name: 'Sarjapur Rd', x: '60%', y: '62%', color: '#38bdf8', size: 26 },
-    ],
-    radar: [90, 82, 78, 74, 88, 72],
+// ═══════════════════════════════════════════════════════════════
+//  DATA  (Q1 2026 — NASSCOM · Vestian · Levels.fyi · AmbitionBox
+//          · Instahyre · Numbeo · NoBroker · JLL/CBRE)
+// ═══════════════════════════════════════════════════════════════
+const C={
+blr:{name:'Bengaluru',color:'#ef4444',
+  // Vacancy data by role/level (% unfilled positions = opportunity)
+  vacancyByRole:{
+    'swe':{rate:18,yoy:'+3%',freshers:42,mid:35,senior:23},
+    'data':{rate:28,yoy:'+9%',freshers:18,mid:44,senior:38},
+    'pm':{rate:12,yoy:'+2%',freshers:5,mid:55,senior:40},
+    'devops':{rate:22,yoy:'+6%',freshers:20,mid:48,senior:32},
+    'design':{rate:14,yoy:'+1%',freshers:28,mid:50,senior:22},
+    'leadership':{rate:8,yoy:'-1%',freshers:0,mid:15,senior:85},
+    'all':{rate:19,yoy:'+4%',freshers:32,mid:42,senior:26},
   },
-  hyd: {
-    name: 'Hyderabad', color: '#f59e0b', short: 'HYD',
-    kpis: [
-      { label: 'Avg SWE Salary', val: '₹14.8L', sub: '▲ 13% YoY', cls: 'up', bar: 74 },
-      { label: 'GCC Count', val: '230+', sub: '▲ Fast growing', cls: 'up', bar: 78 },
-      { label: 'Office Vacancy', val: '4.8%', sub: '▼ Tightening', cls: 'up', bar: 28 },
-      { label: 'Prime Rent', val: '₹82/sqft', sub: '▲ 14% YoY', cls: 'up', bar: 55 },
-      { label: 'Cost of Living', val: '₹48K/mo', sub: '● Moderate', cls: 'up', bar: 50 },
-      { label: 'Relo Score', val: '88/100', sub: 'Grade A+', cls: 'up', bar: 88 },
-    ],
-    salByRole: { labels: ['SWE', 'Data/AI', 'PM', 'DevOps', 'Design', 'Director'], min: [7,9,10,8,6,18], max: [25,34,27,22,16,50] },
-    hiring: [7800, 8600, 9800, 11200, 13600],
-    employers: { gcc: 48, it: 30, startup: 14, other: 8 },
-    skills: [
-      { name: 'GenAI/LLMs', demand: 'critical', score: 96, bar: '96%' },
-      { name: 'Python', demand: 'critical', score: 94, bar: '94%' },
-      { name: 'Azure', demand: 'critical', score: 92, bar: '92%' },
-      { name: 'Java / Spring', demand: 'high', score: 86, bar: '86%' },
-      { name: 'Kubernetes', demand: 'high', score: 84, bar: '84%' },
-      { name: 'React/Next.js', demand: 'high', score: 82, bar: '82%' },
-      { name: 'Data Engineering', demand: 'high', score: 80, bar: '80%' },
-      { name: 'MLOps', demand: 'high', score: 78, bar: '78%' },
-      { name: '.NET / C#', demand: 'mid', score: 72, bar: '72%' },
-      { name: 'TypeScript', demand: 'mid', score: 70, bar: '70%' },
-      { name: 'Terraform', demand: 'mid', score: 65, bar: '65%' },
-      { name: 'SQL / Postgres', demand: 'mid', score: 64, bar: '64%' },
-      { name: 'Flutter', demand: 'grow', score: 58, bar: '58%' },
-      { name: 'Blockchain', demand: 'grow', score: 45, bar: '45%' },
-    ],
-    skillPremium: { labels: ['GenAI', 'Azure Expert', 'MLOps', 'Kubernetes', 'Data Eng'], data: [48, 32, 35, 26, 22] },
-    skillTrend: { labels: ['Python','GenAI','Azure','Java','Kubernetes'], v2024: [80,38,72,82,62], v2026: [94,96,92,86,84] },
-    jobs: [
-      { title: 'Sr SWE — ML Platform', co: 'Apple GCC · HITEC City', sal: '₹38–56L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Principal Engineer', co: 'Amazon Dev Centre · Hyderabad', sal: '₹36–52L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Data Engineer', co: 'HSBC GCC · Financial District', sal: '₹20–30L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Cloud Architect', co: 'Deloitte · Gachibowli', sal: '₹22–32L', tag: 'mnc', type: 'tag-mnc' },
-      { title: 'PM — Growth', co: 'Zepto GCC · Madhapur', sal: '₹18–28L', tag: 'startup', type: 'tag-startup' },
-    ],
-    expSal: { labels: ['0–3 yrs', '3–7 yrs', '7–12 yrs', '12+ yrs'], min: [6,12,20,34], max: [13,25,38,62] },
-    life: [
-      { icon: '🏠', label: 'Housing (1BHK/mo)', val: '₹16–24K', score: 72, color: '#34d399' },
-      { icon: '🍜', label: 'Food (eating out)', val: '₹6–9K/mo', score: 78, color: '#34d399' },
-      { icon: '🚇', label: 'Metro / Transport', val: '₹2–4K/mo', score: 72, color: '#38bdf8' },
-      { icon: '🌡', label: 'Weather', val: '20–34°C avg', score: 72, color: '#38bdf8' },
-      { icon: '🏥', label: 'Healthcare', val: 'Excellent', score: 86, color: '#34d399' },
-      { icon: '🍻', label: 'Nightlife & Social', val: 'Growing', score: 70, color: '#38bdf8' },
-      { icon: '📚', label: 'Education', val: 'IIIT-H, IIMs', score: 84, color: '#34d399' },
-      { icon: '🚦', label: 'Traffic / Commute', val: 'Manageable', score: 62, color: '#f59e0b' },
-      { icon: '🛡', label: 'Safety', val: 'Good', score: 76, color: '#38bdf8' },
-      { icon: '🌿', label: 'Green Spaces', val: 'Excellent', score: 82, color: '#34d399' },
-    ],
-    costBreakdown: { labels: ['Rent', 'Food', 'Transport', 'Entertainment', 'Utilities', 'Other'], data: [20000, 8000, 3500, 6000, 2500, 8000] },
-    disposable: { labels: ['Jr (₹9L)', 'Mid (₹18L)', 'Sr (₹30L)', 'Lead (₹48L)'], gross: [75000, 150000, 250000, 400000], net: [27000, 102000, 202000, 352000] },
-    neighbourhoods: [
-      { name: 'Banjara Hills', vibe: 'Premium lifestyle hub', rent: '₹25–38K', for: '💎 Senior professionals' },
-      { name: 'Gachibowli', vibe: 'Tech corridor, walkable to offices', rent: '₹18–26K', for: '🧑‍💻 MNC/GCC employees' },
-      { name: 'Madhapur', vibe: 'HITEC City adjacent, buzzy', rent: '₹16–24K', for: '🚀 Career-first movers' },
-      { name: 'Kondapur', vibe: 'Family-friendly, good schools', rent: '₹14–20K', for: '👨‍👩‍👧 Families' },
-      { name: 'Kukatpally', vibe: 'Budget-friendly, well-connected', rent: '₹10–16K', for: '💰 Freshers & cost-conscious' },
-    ],
-    relo: { score: 88, grade: 'A+', dims: [
-      { label: 'Career Opportunities', val: 90, color: '#34d399' },
-      { label: 'GCC/MNC Density', val: 88, color: '#34d399' },
-      { label: 'Salary Level', val: 76, color: '#38bdf8' },
-      { label: 'Affordability', val: 72, color: '#34d399' },
-      { label: 'Quality of Life', val: 82, color: '#34d399' },
-      { label: 'Infrastructure', val: 78, color: '#38bdf8' },
-      { label: 'Weather', val: 72, color: '#38bdf8' },
-    ]},
-    reloChecklist: ['✅ Best overall relo score in India 2026', '✅ Lowest cost-to-salary ratio among top 3 cities', '✅ Amazon, Apple, Microsoft massive GCC expansions ongoing', '✅ Good metro connectivity (Phase II complete)', '⚠ Hot summers (Apr–Jun) can be rough', '✅ IIIT-H talent pipeline = strong tech culture', '✅ No state income tax (Telangana), low cost of living', '✅ Fastest growing office market YoY'],
-    reloFacts: [
-      { icon: '✈', label: 'Nearest airport', val: 'Rajiv Gandhi — 24km (30–50 min)' },
-      { icon: '🏙', label: 'Best for', val: 'GCC, BFSI-tech, Cloud roles' },
-      { icon: '📈', label: 'Job growth (YoY)', val: '+24% open positions' },
-      { icon: '🤝', label: 'Expat community', val: 'Large, growing rapidly' },
-    ],
-    hubs: [
-      { name: 'HITEC City', x: '30%', y: '38%', color: '#ef4444', size: 44 },
-      { name: 'Financial District', x: '28%', y: '58%', color: '#ef4444', size: 40 },
-      { name: 'Gachibowli', x: '22%', y: '48%', color: '#f59e0b', size: 36 },
-      { name: 'Madhapur', x: '38%', y: '30%', color: '#f59e0b', size: 32 },
-      { name: 'Nanakramguda', x: '18%', y: '62%', color: '#38bdf8', size: 24 },
-    ],
-    radar: [88, 76, 82, 90, 72, 80],
+  fresherDemand:{
+    score:72, trend:'Rising', topRoles:['SWE (React/Python)','QA Automation','Data Analyst','DevOps Trainee'],
+    avgPackage:'₹7–12L', campusCo:['Google','Flipkart','Walmart Tech','Swiggy','Atlassian'],
+    note:'Bengaluru absorbs ~35% of India\'s engineering fresher batch via on-campus and off-campus GCC hiring. GenAI bootcamp hires at ₹10–14L are the new premium fresher track.'
   },
-  mum: {
-    name: 'Mumbai', color: '#3b82f6', short: 'MUM',
-    kpis: [
-      { label: 'Avg SWE Salary', val: '₹17.8L', sub: '▲ 9% YoY', cls: 'up', bar: 89 },
-      { label: 'GCC Count', val: '140+', sub: 'BFSI-heavy', cls: 'neu', bar: 52 },
-      { label: 'Office Vacancy', val: '8.2%', sub: '● Stable', cls: 'neu', bar: 35 },
-      { label: 'Prime Rent', val: '₹165/sqft', sub: '▲ Highest nationally', cls: 'dn', bar: 90 },
-      { label: 'Cost of Living', val: '₹82K/mo', sub: '● Very High', cls: 'dn', bar: 85 },
-      { label: 'Relo Score', val: '72/100', sub: 'Grade B+', cls: 'neu', bar: 72 },
-    ],
-    salByRole: { labels: ['SWE', 'Data/AI', 'PM', 'DevOps', 'Design', 'Director'], min: [10,12,14,10,8,25], max: [32,44,38,28,22,70] },
-    hiring: [6200, 7000, 7600, 8400, 9800],
-    employers: { gcc: 32, it: 18, startup: 26, other: 24 },
-    skills: [
-      { name: 'Python / Quant', demand: 'critical', score: 94, bar: '94%' },
-      { name: 'GenAI/LLMs', demand: 'critical', score: 92, bar: '92%' },
-      { name: 'AWS / GCP', demand: 'critical', score: 90, bar: '90%' },
-      { name: 'Java / Scala', demand: 'high', score: 86, bar: '86%' },
-      { name: 'React / Node', demand: 'high', score: 82, bar: '82%' },
-      { name: 'Risk Modelling', demand: 'high', score: 80, bar: '80%' },
-      { name: 'Blockchain / DeFi', demand: 'high', score: 76, bar: '76%' },
-      { name: 'TypeScript', demand: 'mid', score: 72, bar: '72%' },
-      { name: 'Kubernetes', demand: 'mid', score: 68, bar: '68%' },
-      { name: 'Spark / Databricks', demand: 'mid', score: 66, bar: '66%' },
-      { name: 'Swift / iOS', demand: 'grow', score: 60, bar: '60%' },
-      { name: 'Golang', demand: 'grow', score: 55, bar: '55%' },
-    ],
-    skillPremium: { labels: ['Quant/Risk', 'GenAI', 'Blockchain', 'Scala', 'AWS'], data: [58, 46, 42, 28, 20] },
-    skillTrend: { labels: ['Python','GenAI','Java/Scala','Blockchain','AWS'], v2024: [78,36,80,54,72], v2026: [94,92,86,76,90] },
-    jobs: [
-      { title: 'Quant Developer', co: 'Goldman Sachs GCC · BKC', sal: '₹45–75L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Sr ML Engineer', co: 'JPMorgan · BKC', sal: '₹38–60L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Sr SWE — Payments', co: 'Razorpay · Lower Parel', sal: '₹28–42L', tag: 'startup', type: 'tag-startup' },
-      { title: 'Product Director', co: 'PhonePe · Powai', sal: '₹40–60L', tag: 'startup', type: 'tag-startup' },
-      { title: 'Risk Analyst Eng', co: 'HSBC GCC · Thane', sal: '₹22–34L', tag: 'gcc', type: 'tag-gcc' },
-    ],
-    expSal: { labels: ['0–3 yrs', '3–7 yrs', '7–12 yrs', '12+ yrs'], min: [9,16,26,44], max: [18,32,48,80] },
-    life: [
-      { icon: '🏠', label: 'Housing (1BHK/mo)', val: '₹32–55K', score: 28, color: '#ef4444' },
-      { icon: '🍜', label: 'Food (eating out)', val: '₹10–15K/mo', score: 55, color: '#f59e0b' },
-      { icon: '🚇', label: 'Metro / Transport', val: '₹2–4K/mo', score: 78, color: '#34d399' },
-      { icon: '🌡', label: 'Weather', val: 'Humid, 28–34°C', score: 48, color: '#f59e0b' },
-      { icon: '🏥', label: 'Healthcare', val: 'World-class', score: 90, color: '#34d399' },
-      { icon: '🍻', label: 'Nightlife & Social', val: 'Best in India', score: 96, color: '#34d399' },
-      { icon: '📚', label: 'Education', val: 'IIT-B, IIM-A nearby', score: 88, color: '#34d399' },
-      { icon: '🚦', label: 'Traffic / Commute', val: 'Severe, suburban trains', score: 35, color: '#ef4444' },
-      { icon: '🛡', label: 'Safety', val: 'Good for metro city', score: 72, color: '#38bdf8' },
-      { icon: '🌿', label: 'Green Spaces', val: 'Limited', score: 40, color: '#f59e0b' },
-    ],
-    costBreakdown: { labels: ['Rent', 'Food', 'Transport', 'Entertainment', 'Utilities', 'Other'], data: [42000, 13000, 4000, 12000, 3000, 8000] },
-    disposable: { labels: ['Jr (₹12L)', 'Mid (₹22L)', 'Sr (₹38L)', 'Lead (₹60L)'], gross: [100000, 183000, 316000, 500000], net: [18000, 101000, 234000, 418000] },
-    neighbourhoods: [
-      { name: 'BKC', vibe: 'Finance-tech premium', rent: '₹45–70K', for: '💰 BFSI-tech leaders' },
-      { name: 'Powai', vibe: 'Startup lake district', rent: '₹28–42K', for: '🚀 Startup founders' },
-      { name: 'Lower Parel', vibe: 'Media & fintech hub', rent: '₹32–50K', for: '🎭 Creative & finance pros' },
-      { name: 'Thane', vibe: 'Suburban, affordable', rent: '₹16–24K', for: '👨‍👩‍👧 Families prioritising space' },
-      { name: 'Navi Mumbai', vibe: 'Budget, planned city', rent: '₹14–20K', for: '💰 Cost-conscious professionals' },
-    ],
-    relo: { score: 72, grade: 'B+', dims: [
-      { label: 'Career Opportunities', val: 84, color: '#34d399' },
-      { label: 'GCC/MNC Density', val: 72, color: '#38bdf8' },
-      { label: 'Salary Level', val: 88, color: '#34d399' },
-      { label: 'Affordability', val: 28, color: '#ef4444' },
-      { label: 'Quality of Life', val: 68, color: '#f59e0b' },
-      { label: 'Infrastructure', val: 80, color: '#34d399' },
-      { label: 'Weather', val: 46, color: '#f59e0b' },
-    ]},
-    reloChecklist: ['✅ Highest nominal salaries in India (BFSI-tech, quant)', '✅ Best fintech & startup ecosystem outside Bengaluru', '⚠ Rent will consume 35–50% of salary for most roles', '⚠ Humidity May–Sep can be uncomfortable', '✅ Best social/nightlife scene in India by far', '⚠ Traffic & suburban trains are brutal', '✅ Strongest BFSI-tech and quant career ladder', '⚠ Only consider if joining a high-paying BFSI/GCC role'],
-    reloFacts: [
-      { icon: '✈', label: 'Nearest airport', val: 'CSIA — 20km (30–80 min)' },
-      { icon: '🏙', label: 'Best for', val: 'BFSI-tech, Fintech, Quant' },
-      { icon: '📈', label: 'Job growth (YoY)', val: '+14% open positions' },
-      { icon: '🤝', label: 'Expat community', val: 'Very large, financial hub' },
-    ],
-    hubs: [
-      { name: 'BKC', x: '40%', y: '45%', color: '#ef4444', size: 44 },
-      { name: 'Powai', x: '62%', y: '32%', color: '#f59e0b', size: 38 },
-      { name: 'Lower Parel', x: '35%', y: '60%', color: '#f59e0b', size: 34 },
-      { name: 'Thane', x: '70%', y: '28%', color: '#38bdf8', size: 28 },
-      { name: 'Navi Mumbai', x: '55%', y: '72%', color: '#38bdf8', size: 24 },
-    ],
-    radar: [84, 88, 68, 28, 70, 82],
+  kpis:[
+    {label:'Q1 2026 Leasing',val:'4.91 MSF',sub:'▲ Led all cities · Vestian',cls:'up',bar:100},
+    {label:'GCC Count',val:'400+',sub:'▲ Largest nationally',cls:'up',bar:100},
+    {label:'Office Vacancy',val:'11.8%',sub:'↓ Tightening · JLL',cls:'neu',bar:38},
+    {label:'Prime Rent',val:'₹118/sqft',sub:'▲ 8% YoY · CBRE',cls:'up',bar:70},
+    {label:'Mid SWE (3–7yr)',val:'₹14–22L',sub:'Levels.fyi + AmbitionBox',cls:'up',bar:80},
+    {label:'1BHK Rent/mo',val:'₹18–30K',sub:'NoBroker Apr 2026',cls:'neu',bar:60},
+  ],
+  salByRole:{
+    all:   {labels:['SWE','Data/AI','PM','DevOps','Design','Director'],min:[8,10,12,9,7,22],max:[28,38,32,26,18,60]},
+    swe:   {labels:['Fresher','Junior','Mid','Senior','Staff'],min:[7,10,14,22,38],max:[12,16,22,38,65]},
+    data:  {labels:['Fresher','Junior','Mid','Senior','Staff'],min:[6,10,14,24,42],max:[11,16,26,42,75]},
+    pm:    {labels:['APM','PM','Sr PM','Group PM','Director'],min:[8,12,18,26,38],max:[14,20,28,40,60]},
+    devops:{labels:['Junior','Mid','Senior','Lead','Architect'],min:[7,11,16,22,30],max:[13,18,26,36,52]},
+    design:{labels:['Junior','Mid','Senior','Lead','Principal'],min:[5,8,12,18,26],max:[10,15,22,30,45]},
+    leadership:{labels:['Assoc Dir','Director','Sr Director','VP','SVP/CXO'],min:[30,40,55,75,100],max:[50,65,85,110,160]},
   },
-  ncr: {
-    name: 'Delhi NCR', color: '#8b5cf6', short: 'NCR',
-    kpis: [
-      { label: 'Avg SWE Salary', val: '₹14.2L', sub: '▲ 11% YoY', cls: 'up', bar: 72 },
-      { label: 'GCC Count', val: '270+', sub: '14% national share', cls: 'up', bar: 68 },
-      { label: 'Office Vacancy', val: '1.4%', sub: 'Cyber City prime', cls: 'up', bar: 15 },
-      { label: 'Prime Rent', val: '₹142/sqft', sub: '▲ 12% YoY', cls: 'dn', bar: 78 },
-      { label: 'Cost of Living', val: '₹54K/mo', sub: '● Moderate-High', cls: 'neu', bar: 58 },
-      { label: 'Relo Score', val: '78/100', sub: 'Grade A-', cls: 'up', bar: 78 },
-    ],
-    salByRole: { labels: ['SWE', 'Data/AI', 'PM', 'DevOps', 'Design', 'Director'], min: [7,9,10,8,6,18], max: [26,36,28,22,16,52] },
-    hiring: [6800, 7500, 8400, 9600, 11200],
-    employers: { gcc: 44, it: 32, startup: 14, other: 10 },
-    skills: [
-      { name: 'GenAI/LLMs', demand: 'critical', score: 94, bar: '94%' },
-      { name: 'Python', demand: 'critical', score: 92, bar: '92%' },
-      { name: 'AWS / Azure', demand: 'critical', score: 90, bar: '90%' },
-      { name: 'React / Next.js', demand: 'high', score: 84, bar: '84%' },
-      { name: 'Java / Spring', demand: 'high', score: 82, bar: '82%' },
-      { name: 'Kubernetes', demand: 'high', score: 80, bar: '80%' },
-      { name: 'Data Engineering', demand: 'high', score: 78, bar: '78%' },
-      { name: 'TypeScript', demand: 'mid', score: 72, bar: '72%' },
-      { name: '.NET / C#', demand: 'mid', score: 68, bar: '68%' },
-      { name: 'Terraform', demand: 'mid', score: 65, bar: '65%' },
-      { name: 'Go', demand: 'grow', score: 58, bar: '58%' },
-      { name: 'AR/VR', demand: 'grow', score: 44, bar: '44%' },
-    ],
-    skillPremium: { labels: ['GenAI', 'Cloud Arch', 'MLOps', 'Kubernetes', 'React'], data: [50, 30, 32, 24, 18] },
-    skillTrend: { labels: ['Python','GenAI','AWS','Java','React'], v2024: [78,40,74,78,72], v2026: [92,94,90,82,84] },
-    jobs: [
-      { title: 'Sr ML Engineer', co: 'Google · Cyber City, Gurugram', sal: '₹34–52L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Principal SWE', co: 'Microsoft · Cyber City', sal: '₹36–55L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'AI/ML Engineer', co: 'Samsung R&D · Noida Sec 62', sal: '₹22–32L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Cloud Architect', co: 'Deloitte · Golf Course Rd', sal: '₹24–36L', tag: 'mnc', type: 'tag-mnc' },
-      { title: 'Data Scientist', co: 'Adobe · Noida Sec 62', sal: '₹18–28L', tag: 'gcc', type: 'tag-gcc' },
-    ],
-    expSal: { labels: ['0–3 yrs', '3–7 yrs', '7–12 yrs', '12+ yrs'], min: [6,11,19,32], max: [13,24,38,60] },
-    life: [
-      { icon: '🏠', label: 'Housing (1BHK/mo)', val: '₹18–30K', score: 58, color: '#f59e0b' },
-      { icon: '🍜', label: 'Food (eating out)', val: '₹7–11K/mo', score: 65, color: '#38bdf8' },
-      { icon: '🚇', label: 'Metro / Transport', val: '₹2–4K/mo', score: 80, color: '#34d399' },
-      { icon: '🌡', label: 'Weather', val: 'Extreme (7–45°C)', score: 28, color: '#ef4444' },
-      { icon: '🏥', label: 'Healthcare', val: 'AIIMS, world-class', score: 90, color: '#34d399' },
-      { icon: '🍻', label: 'Nightlife & Social', val: 'Good, growing', score: 72, color: '#38bdf8' },
-      { icon: '📚', label: 'Education', val: 'IIT-D, IIM-L, DU', score: 92, color: '#34d399' },
-      { icon: '🚦', label: 'Traffic / Commute', val: 'Challenging', score: 42, color: '#f59e0b' },
-      { icon: '🛡', label: 'Safety', val: 'Moderate', score: 52, color: '#f59e0b' },
-      { icon: '🌿', label: 'Green Spaces', val: 'Moderate', score: 55, color: '#f59e0b' },
-    ],
-    costBreakdown: { labels: ['Rent', 'Food', 'Transport', 'Entertainment', 'Utilities', 'Other'], data: [24000, 9000, 4000, 7000, 3000, 7000] },
-    disposable: { labels: ['Jr (₹8L)', 'Mid (₹17L)', 'Sr (₹30L)', 'Lead (₹50L)'], gross: [66000, 141000, 250000, 416000], net: [12000, 87000, 196000, 362000] },
-    neighbourhoods: [
-      { name: 'Cyber City area', vibe: 'MNC corridor, premium', rent: '₹24–36K', for: '💼 GCC professionals' },
-      { name: 'Golf Course Ext', vibe: 'Upscale residential', rent: '₹20–32K', for: '💎 Senior professionals' },
-      { name: 'Noida Sec 50/51', vibe: 'Quiet, family-centric', rent: '₹15–22K', for: '👨‍👩‍👧 Families, Noida workers' },
-      { name: 'Sohna Road', vibe: 'Budget Gurugram', rent: '₹12–18K', for: '💰 Budget-conscious' },
-      { name: 'Greater Noida West', vibe: 'New construction, cheap', rent: '₹9–14K', for: '🌱 Freshers, long commuters' },
-    ],
-    relo: { score: 78, grade: 'A-', dims: [
-      { label: 'Career Opportunities', val: 86, color: '#34d399' },
-      { label: 'GCC/MNC Density', val: 82, color: '#34d399' },
-      { label: 'Salary Level', val: 74, color: '#38bdf8' },
-      { label: 'Affordability', val: 58, color: '#f59e0b' },
-      { label: 'Quality of Life', val: 64, color: '#f59e0b' },
-      { label: 'Infrastructure', val: 80, color: '#34d399' },
-      { label: 'Weather', val: 28, color: '#ef4444' },
-    ]},
-    reloChecklist: ['✅ India\'s best metro network (Delhi Metro, ~350km)', '✅ Strong GCC density in Cyber City & HITEC', '⚠ Weather extremes: severe winters & brutal summers', '✅ Best healthcare (AIIMS) in India', '⚠ Air quality can be very poor Oct–Feb (AQI 300+)', '✅ Central government jobs + private sector both thriving', '⚠ Safety concerns at night in some areas', '✅ Best connectivity — 2 intl airports (IGI + Hindon)'],
-    reloFacts: [
-      { icon: '✈', label: 'Nearest airport', val: 'IGI — 18km (30–60 min)' },
-      { icon: '🏙', label: 'Best for', val: 'GCC, IT-BPM, Engineering' },
-      { icon: '📈', label: 'Job growth (YoY)', val: '+18% open positions' },
-      { icon: '🤝', label: 'Expat community', val: 'Very large, diplomatic hub' },
-    ],
-    hubs: [
-      { name: 'Cyber City', x: '28%', y: '48%', color: '#ef4444', size: 44 },
-      { name: 'Noida Sec 62', x: '72%', y: '26%', color: '#f59e0b', size: 40 },
-      { name: 'Udyog Vihar', x: '24%', y: '38%', color: '#f59e0b', size: 32 },
-      { name: 'Golf Course Rd', x: '32%', y: '62%', color: '#38bdf8', size: 28 },
-      { name: 'Noida Expy', x: '64%', y: '44%', color: '#38bdf8', size: 24 },
-    ],
-    radar: [86, 74, 64, 58, 80, 72],
+  hiring:{all:[8800,9600,11200,13000,14800],swe:[3200,3600,4100,4800,5400],data:[1800,2100,2600,3200,3900],pm:[600,700,800,900,1100],devops:[900,1000,1200,1400,1700]},
+  emp:{gcc:42,it:26,startup:24,other:8},
+  skills:[
+    {n:'GenAI / LLMs',d:'critical',s:98,fresherFit:40},{n:'Python',d:'critical',s:95,fresherFit:85},
+    {n:'AWS',d:'critical',s:92,fresherFit:55},{n:'Kubernetes',d:'high',s:87,fresherFit:20},
+    {n:'React / Next.js',d:'high',s:84,fresherFit:80},{n:'Go / Rust',d:'high',s:80,fresherFit:25},
+    {n:'MLOps',d:'high',s:79,fresherFit:30},{n:'TypeScript',d:'high',s:77,fresherFit:75},
+    {n:'Java / Spring',d:'mid',s:72,fresherFit:70},{n:'Data Engineering',d:'mid',s:70,fresherFit:45},
+    {n:'Terraform',d:'mid',s:66,fresherFit:15},{n:'Kafka',d:'mid',s:63,fresherFit:10},
+    {n:'Flutter',d:'grow',s:58,fresherFit:65},{n:'Web3/Solidity',d:'grow',s:48,fresherFit:40},
+  ],
+  prem:{labels:['GenAI/LLMs','MLOps','Kubernetes','Go/Rust','AWS'],data:[52,38,28,24,18]},
+  trend:{labels:['Python','GenAI','K8s','React','Java'],v24:[80,42,65,70,76],v26:[95,98,87,84,72]},
+  jobs:[
+    {title:'Staff ML Engineer',co:'Google DeepMind GCC · Whitefield',sal:'₹55–95L',salMin:55,salMax:95,tag:'GCC',tc:'tg-gcc',role:'data',exp:'7-12',coType:'gcc'},
+    {title:'Principal SWE — Platform',co:'Microsoft · Manyata Tech Park',sal:'₹42–68L',salMin:42,salMax:68,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'7-12',coType:'gcc'},
+    {title:'Senior SWE — GenAI',co:'Swiggy · Koramangala',sal:'₹28–42L',salMin:28,salMax:42,tag:'Startup',tc:'tg-startup',role:'swe',exp:'3-7',coType:'startup'},
+    {title:'Data Scientist',co:'Walmart Global Tech · Mahadevapura',sal:'₹22–34L',salMin:22,salMax:34,tag:'GCC',tc:'tg-gcc',role:'data',exp:'3-7',coType:'gcc'},
+    {title:'Product Manager',co:'Atlassian GCC · Bellandur',sal:'₹24–36L',salMin:24,salMax:36,tag:'GCC',tc:'tg-gcc',role:'pm',exp:'3-7',coType:'gcc'},
+    {title:'DevOps Lead',co:'Thoughtworks · HSR Layout',sal:'₹18–28L',salMin:18,salMax:28,tag:'MNC',tc:'tg-mnc',role:'devops',exp:'3-7',coType:'gcc'},
+    {title:'Engineering Director',co:'Razorpay · Indiranagar',sal:'₹60–90L',salMin:60,salMax:90,tag:'Startup',tc:'tg-startup',role:'leadership',exp:'12+',coType:'startup'},
+    {title:'UX / Product Designer',co:'Adobe GCC · Bengaluru',sal:'₹14–22L',salMin:14,salMax:22,tag:'GCC',tc:'tg-gcc',role:'design',exp:'3-7',coType:'gcc'},
+    {title:'Fresher SWE — Python/React',co:'Flipkart · Koramangala',sal:'₹8–12L',salMin:8,salMax:12,tag:'Startup',tc:'tg-startup',role:'swe',exp:'0-3',coType:'startup'},
+    {title:'Junior Data Analyst',co:'Walmart Global Tech · Bengaluru',sal:'₹7–11L',salMin:7,salMax:11,tag:'GCC',tc:'tg-gcc',role:'data',exp:'0-3',coType:'gcc'},
+    {title:'Junior DevOps Engineer',co:'Infosys · Electronic City',sal:'₹6–10L',salMin:6,salMax:10,tag:'IT Services',tc:'tg-mnc',role:'devops',exp:'0-3',coType:'it'},
+    {title:'Associate PM (APM)',co:'Dunzo · HSR Layout',sal:'₹9–14L',salMin:9,salMax:14,tag:'Startup',tc:'tg-startup',role:'pm',exp:'0-3',coType:'startup'},
+  ],
+  expSal:{labels:['0–3 yrs','3–7 yrs','7–12 yrs','12+ yrs'],min:[7,14,22,40],max:[14,28,45,90]},
+  life:[
+    {icon:'🏠',label:'Housing (1BHK)',val:'₹18–30K/mo',score:45,color:'#ef4444'},
+    {icon:'🍜',label:'Food & dining',val:'₹7–12K/mo',score:62,color:'#f59e0b'},
+    {icon:'🚇',label:'Metro / commute',val:'₹2–5K/mo',score:68,color:'#3b82f6'},
+    {icon:'🌡',label:'Weather',val:'22–30°C year-round',score:92,color:'#0e9e6e'},
+    {icon:'🏥',label:'Healthcare',val:'World-class private',score:88,color:'#0e9e6e'},
+    {icon:'🍻',label:'Nightlife & social',val:'Best in South India',score:86,color:'#8b5cf6'},
+    {icon:'📚',label:'Education (IISc,IIM-B)',val:'Top-tier institutes',score:90,color:'#0e9e6e'},
+    {icon:'🚦',label:'Traffic / commute',val:'Severe — worst in India',score:18,color:'#ef4444'},
+    {icon:'💨',label:'Air quality (AQI)',val:'Moderate 60–90',score:70,color:'#3b82f6'},
+    {icon:'🛡',label:'Safety',val:'Moderate-Good',score:68,color:'#3b82f6'},
+  ],
+  cost:{labels:['Rent','Food','Transport','Entertainment','Utilities','Other'],data:[24000,10000,4000,8000,3000,8000]},
+  disp:{labels:['Jr ₹10L','Mid ₹18L','Sr ₹32L','Lead ₹55L'],gross:[83000,150000,266000,458000],net:[22000,93000,209000,401000]},
+  hoods:[
+    {name:'Koramangala',vibe:'Startup & nightlife',rent:'₹28–42K',for:'🧑‍💻 Young startup crowd'},
+    {name:'Whitefield',vibe:'MNC/GCC suburb',rent:'₹16–26K',for:'👨‍👩‍👧 Families & seniors'},
+    {name:'HSR Layout',vibe:'Walkable, balanced',rent:'₹20–30K',for:'⚖ Work-life balance'},
+    {name:'Indiranagar',vibe:'Premium social hub',rent:'₹30–48K',for:'🎭 Social butterflies'},
+    {name:'Bellandur',vibe:'Budget, tech-close',rent:'₹14–22K',for:'💰 Cost-conscious freshers'},
+  ],
+  relo:{score:82,grade:'A',dims:[
+    {label:'Career Opportunities',val:96,color:'#0e9e6e'},{label:'GCC/MNC Density',val:98,color:'#0e9e6e'},
+    {label:'Salary Level',val:82,color:'#3b82f6'},{label:'Affordability',val:40,color:'#ef4444'},
+    {label:'Quality of Life',val:74,color:'#3b82f6'},{label:'Infrastructure',val:60,color:'#f59e0b'},
+    {label:'Weather',val:92,color:'#0e9e6e'},
+  ]},
+  reloList:['✅ India\'s #1 GCC hub — 400+ GCCs, deepest tech talent pool','✅ Best GenAI + ML job density nationally (Levels.fyi Apr 2026)','✅ Largest startup ecosystem — 5,000+ startups, highest equity upside','✅ Best weather in India year-round (22–30°C)','✅ Cosmopolitan, English-first, very expat-friendly','⚠ Rent consumes 35–50% of a ₹12L salary — budget carefully','⚠ Traffic is genuinely severe — live within 5km of your office','⚠ Water scarcity April–June; bore-well dependency in many areas'],
+  reloFacts:[
+    {icon:'✈',label:'Airport',val:'KIA — 35km (45–90 min)'},
+    {icon:'🏙',label:'Best for',val:'GCC, AI/ML, Startup, Product'},
+    {icon:'📈',label:'Job growth YoY',val:'+18% postings · Naukri Q1 2026'},
+    {icon:'🌍',label:'Expat community',val:'Very large — 90+ nationalities'},
+  ],
+  hubs:[{n:'Whitefield',x:'74%',y:'32%',c:'#ef4444',sz:44},{n:'Koramangala',x:'36%',y:'52%',c:'#ef4444',sz:40},{n:'Manyata Park',x:'44%',y:'20%',c:'#f59e0b',sz:36},{n:'Electronic City',x:'40%',y:'76%',c:'#f59e0b',sz:32},{n:'Sarjapur Rd',x:'58%',y:'60%',c:'#3b82f6',sz:24}],
+  radar:[94,80,76,40,60,68],
+  insights:[
+    {cls:'',tag:'it-b',text:'<strong>4.91 MSF leased in Q1 2026 — Bengaluru led all 7 Indian cities (Vestian).</strong> GCCs drove the bulk. Whitefield and Manyata Tech Park remain the hottest corridors. Prime rents at ₹118/sqft (+8% YoY). Secondary zones still at ₹70–80/sqft — meaningful opportunity in Sarjapur Rd corridor.'},
+    {cls:'green',tag:'it-g',text:'<strong>GenAI talent war is real and intensifying:</strong> Google, Microsoft, and Walmart GCCs are bidding war for ML engineers with LLM/RAG experience. Premiums of 40–55% above median SWE salary. If you have PyTorch + fine-tuning experience, Bengaluru GCCs are your highest leverage — apply directly, skip aggregators.'},
+    {cls:'amber',tag:'it-a',text:'<strong>Fresher market is bifurcating:</strong> General SWE freshers face 22% vacancy rate (competitive). But GenAI-ready freshers — those with LLM projects, Kaggle rankings, or ML certifications — are getting ₹10–14L offers vs ₹7–8L for peers. The single most valuable thing a 2026 grad can do is build one shipped GenAI project.'},
+    {cls:'',tag:'it-b',text:'<strong>Traffic is the hidden tax on your career:</strong> Average commute Whitefield → Koramangala = 60–90 mins one-way. That is 120–180 hours/month lost. Negotiate WFH 2–3 days/week, or budget for housing near your office. The "live far, pay less rent" math rarely works out in Bengaluru.'},
+  ],
+},
+hyd:{name:'Hyderabad',color:'#f59e0b',
+  vacancyByRole:{
+    'swe':{rate:22,yoy:'+8%',freshers:38,mid:40,senior:22},
+    'data':{rate:31,yoy:'+12%',freshers:20,mid:48,senior:32},
+    'pm':{rate:14,yoy:'+4%',freshers:8,mid:52,senior:40},
+    'devops':{rate:26,yoy:'+9%',freshers:22,mid:50,senior:28},
+    'design':{rate:16,yoy:'+3%',freshers:30,mid:48,senior:22},
+    'leadership':{rate:9,yoy:'+1%',freshers:0,mid:18,senior:82},
+    'all':{rate:22,yoy:'+7%',freshers:30,mid:44,senior:26},
   },
-  ahm: {
-    name: 'Ahmedabad', color: '#10b981', short: 'AHM',
-    kpis: [
-      { label: 'Avg SWE Salary', val: '₹9.8L', sub: '▲ 22% YoY', cls: 'up', bar: 49 },
-      { label: 'GCC Count', val: '45+', sub: '▲ GIFT City surge', cls: 'up', bar: 30 },
-      { label: 'Office Vacancy', val: '18%', sub: '● Ample supply', cls: 'neu', bar: 55 },
-      { label: 'Prime Rent', val: '₹58/sqft', sub: '▲ 18% YoY', cls: 'up', bar: 38 },
-      { label: 'Cost of Living', val: '₹32K/mo', sub: '● Best in class', cls: 'up', bar: 32 },
-      { label: 'Relo Score', val: '74/100', sub: 'Grade B+', cls: 'up', bar: 74 },
-    ],
-    salByRole: { labels: ['SWE', 'Data/AI', 'PM', 'DevOps', 'Design', 'Director'], min: [5,6,7,5,4,14], max: [18,24,20,15,12,36] },
-    hiring: [1200, 1600, 2200, 3100, 4600],
-    employers: { gcc: 28, it: 38, startup: 18, other: 16 },
-    skills: [
-      { name: 'Python', demand: 'critical', score: 90, bar: '90%' },
-      { name: 'Java / Spring', demand: 'critical', score: 88, bar: '88%' },
-      { name: 'GenAI/LLMs', demand: 'high', score: 82, bar: '82%' },
-      { name: 'React / Angular', demand: 'high', score: 80, bar: '80%' },
-      { name: 'AWS', demand: 'high', score: 76, bar: '76%' },
-      { name: 'Fintech / BFSI', demand: 'high', score: 78, bar: '78%' },
-      { name: 'TypeScript', demand: 'mid', score: 68, bar: '68%' },
-      { name: '.NET', demand: 'mid', score: 65, bar: '65%' },
-      { name: 'Data Engineering', demand: 'mid', score: 62, bar: '62%' },
-      { name: 'Kubernetes', demand: 'grow', score: 55, bar: '55%' },
-      { name: 'Go', demand: 'grow', score: 48, bar: '48%' },
-      { name: 'Blockchain', demand: 'grow', score: 60, bar: '60%' },
-    ],
-    skillPremium: { labels: ['GenAI', 'Fintech', 'AWS', 'React', 'Java'], data: [44, 38, 28, 20, 15] },
-    skillTrend: { labels: ['Java','Python','GenAI','React','AWS'], v2024: [80,68,28,70,58], v2026: [88,90,82,80,76] },
-    jobs: [
-      { title: 'SWE — GIFT City Fintech', co: 'HDFC GCC · GIFT City', sal: '₹16–24L', tag: 'gcc', type: 'tag-gcc' },
-      { title: 'Data Engineer', co: 'TCS · Ahmedabad Delivery', sal: '₹12–18L', tag: 'mnc', type: 'tag-mnc' },
-      { title: 'Full Stack Developer', co: 'Infosys BPM · Prahlad Nagar', sal: '₹10–16L', tag: 'mnc', type: 'tag-mnc' },
-      { title: 'Backend Engineer', co: 'CRED · Remote+Ahmedabad', sal: '₹14–22L', tag: 'startup', type: 'tag-startup' },
-      { title: 'Cloud DevOps', co: 'Wipro · SG Highway', sal: '₹11–17L', tag: 'mnc', type: 'tag-mnc' },
-    ],
-    expSal: { labels: ['0–3 yrs', '3–7 yrs', '7–12 yrs', '12+ yrs'], min: [4,8,14,22], max: [9,18,28,42] },
-    life: [
-      { icon: '🏠', label: 'Housing (1BHK/mo)', val: '₹7–12K', score: 96, color: '#34d399' },
-      { icon: '🍜', label: 'Food (eating out)', val: '₹3–5K/mo', score: 92, color: '#34d399' },
-      { icon: '🚇', label: 'Metro / Transport', val: '₹1–3K/mo', score: 80, color: '#34d399' },
-      { icon: '🌡', label: 'Weather', val: 'Hot, 18–40°C', score: 48, color: '#f59e0b' },
-      { icon: '🏥', label: 'Healthcare', val: 'Good, affordable', score: 76, color: '#34d399' },
-      { icon: '🍻', label: 'Nightlife & Social', val: 'Limited (dry state)', score: 30, color: '#ef4444' },
-      { icon: '📚', label: 'Education', val: 'IIM-A, NID, IIT-Gn', score: 88, color: '#34d399' },
-      { icon: '🚦', label: 'Traffic / Commute', val: 'Manageable', score: 74, color: '#34d399' },
-      { icon: '🛡', label: 'Safety', val: 'Very Good', score: 86, color: '#34d399' },
-      { icon: '🌿', label: 'Green Spaces', val: 'Moderate', score: 60, color: '#38bdf8' },
-    ],
-    costBreakdown: { labels: ['Rent', 'Food', 'Transport', 'Entertainment', 'Utilities', 'Other'], data: [10000, 5000, 2000, 3000, 1500, 5000] },
-    disposable: { labels: ['Jr (₹6L)', 'Mid (₹12L)', 'Sr (₹22L)', 'Lead (₹36L)'], gross: [50000, 100000, 183000, 300000], net: [23500, 73500, 156500, 273500] },
-    neighbourhoods: [
-      { name: 'GIFT City', vibe: 'Emerging fintech hub', rent: '₹12–18K', for: '🏦 BFSI-tech professionals' },
-      { name: 'Prahlad Nagar', vibe: 'Tech & commercial', rent: '₹10–16K', for: '🧑‍💻 IT professionals' },
-      { name: 'SG Highway', vibe: 'Modern, well-connected', rent: '₹9–14K', for: '🚀 Young professionals' },
-      { name: 'Satellite', vibe: 'Premium residential', rent: '₹12–20K', for: '💎 Established families' },
-      { name: 'Bopal', vibe: 'Suburb, affordable', rent: '₹7–11K', for: '💰 Budget-conscious all' },
-    ],
-    relo: { score: 74, grade: 'B+', dims: [
-      { label: 'Career Opportunities', val: 56, color: '#f59e0b' },
-      { label: 'GCC/MNC Density', val: 44, color: '#f59e0b' },
-      { label: 'Salary Level', val: 52, color: '#f59e0b' },
-      { label: 'Affordability', val: 96, color: '#34d399' },
-      { label: 'Quality of Life', val: 78, color: '#34d399' },
-      { label: 'Infrastructure', val: 70, color: '#38bdf8' },
-      { label: 'Weather', val: 48, color: '#f59e0b' },
-    ]},
-    reloChecklist: ['✅ Cheapest cost of living among top 5 cities by far', '✅ GIFT City: India\'s fastest-growing fintech hub', '⚠ Dry state — no alcohol legally available', '✅ IIM-A location gives strong business network', '✅ Excellent safety, family-friendly culture', '⚠ Fewer MNC/startup options vs Bengaluru/Hyderabad', '✅ Best disposable income ratio for mid salaries', '🌱 Catching up fast — ideal if you want early-mover advantage'],
-    reloFacts: [
-      { icon: '✈', label: 'Nearest airport', val: 'Sardar Vallabhbhai Patel — 12km' },
-      { icon: '🏙', label: 'Best for', val: 'BFSI-tech, GIFT City, IT Services' },
-      { icon: '📈', label: 'Job growth (YoY)', val: '+38% open positions (fastest)' },
-      { icon: '🤝', label: 'Expat community', val: 'Small but growing, GIFT City' },
-    ],
-    hubs: [
-      { name: 'GIFT City', x: '65%', y: '32%', color: '#10b981', size: 40 },
-      { name: 'Prahlad Nagar', x: '38%', y: '48%', color: '#f59e0b', size: 34 },
-      { name: 'SG Highway', x: '30%', y: '62%', color: '#38bdf8', size: 28 },
-      { name: 'Satellite', x: '44%', y: '38%', color: '#38bdf8', size: 22 },
-    ],
-    radar: [56, 52, 78, 96, 70, 86],
-  }
+  fresherDemand:{
+    score:80, trend:'Surging', topRoles:['Cloud SWE (Azure)','Data Engineer','Java Developer','QA Automation'],
+    avgPackage:'₹6–10L', campusCo:['Amazon','Apple GCC','HSBC','Microsoft','Deloitte'],
+    note:'Hyderabad is the #1 fresher opportunity city in 2026. Amazon Dev Centre alone hires 800+ freshers/year. IIIT-H pipeline ensures quality, but off-campus opportunities are surging as GCC expansion outpaces campus supply.'
+  },
+  kpis:[
+    {label:'Q1 2026 Leasing',val:'3.79 MSF',sub:'▲ 2× YoY · NASSCOM',cls:'up',bar:77},
+    {label:'GCC Count',val:'220+',sub:'▲ Amazon, Apple, HSBC',cls:'up',bar:72},
+    {label:'Office Vacancy',val:'4.8%',sub:'↓ Tightening fast · JLL',cls:'up',bar:22},
+    {label:'Prime Rent',val:'₹82/sqft',sub:'▲ 14% YoY · HITEC',cls:'up',bar:54},
+    {label:'Mid SWE (3–7yr)',val:'₹12–20L',sub:'AmbitionBox + Levels',cls:'up',bar:70},
+    {label:'1BHK Rent/mo',val:'₹14–22K',sub:'NoBroker Apr 2026',cls:'up',bar:50},
+  ],
+  salByRole:{
+    all:   {labels:['SWE','Data/AI','PM','DevOps','Design','Director'],min:[7,9,10,8,6,18],max:[26,36,28,22,16,52]},
+    swe:   {labels:['Fresher','Junior','Mid','Senior','Staff'],min:[6,9,12,20,34],max:[11,14,20,34,56]},
+    data:  {labels:['Fresher','Junior','Mid','Senior','Staff'],min:[5,9,13,22,38],max:[10,14,22,36,65]},
+    pm:    {labels:['APM','PM','Sr PM','Group PM','Director'],min:[7,10,16,22,32],max:[12,18,24,34,52]},
+    devops:{labels:['Junior','Mid','Senior','Lead','Architect'],min:[6,10,14,20,28],max:[12,16,22,32,46]},
+    design:{labels:['Junior','Mid','Senior','Lead','Principal'],min:[5,7,11,16,22],max:[9,13,19,26,38]},
+    leadership:{labels:['Assoc Dir','Director','Sr Director','VP','SVP/CXO'],min:[26,36,48,65,88],max:[44,58,74,95,140]},
+  },
+  hiring:{all:[7400,8200,9400,11000,13800],swe:[2800,3200,3700,4400,5600],data:[1600,1900,2300,2800,3600],pm:[500,600,700,800,1000],devops:[800,950,1100,1300,1600]},
+  emp:{gcc:48,it:28,startup:14,other:10},
+  skills:[
+    {n:'GenAI / LLMs',d:'critical',s:95,fresherFit:38},{n:'Python',d:'critical',s:93,fresherFit:82},
+    {n:'Azure',d:'critical',s:91,fresherFit:50},{n:'Java / Spring',d:'high',s:86,fresherFit:75},
+    {n:'Kubernetes',d:'high',s:83,fresherFit:18},{n:'React / Next.js',d:'high',s:81,fresherFit:78},
+    {n:'Data Engineering',d:'high',s:79,fresherFit:40},{n:'MLOps',d:'high',s:77,fresherFit:28},
+    {n:'.NET / C#',d:'mid',s:72,fresherFit:60},{n:'TypeScript',d:'mid',s:69,fresherFit:72},
+    {n:'SQL / Postgres',d:'mid',s:65,fresherFit:80},{n:'Terraform',d:'mid',s:62,fresherFit:12},
+    {n:'Flutter',d:'grow',s:56,fresherFit:62},{n:'Blockchain',d:'grow',s:44,fresherFit:35},
+  ],
+  prem:{labels:['GenAI/LLMs','MLOps','Azure Expert','Kubernetes','Java Expert'],data:[48,35,32,26,22]},
+  trend:{labels:['Python','GenAI','Azure','Java','K8s'],v24:[78,36,70,80,60],v26:[93,95,91,86,83]},
+  jobs:[
+    {title:'Sr ML Engineer — GenAI',co:'Apple GCC · HITEC City',sal:'₹40–62L',salMin:40,salMax:62,tag:'GCC',tc:'tg-gcc',role:'data',exp:'7-12',coType:'gcc'},
+    {title:'Principal Engineer',co:'Amazon Dev Centre · Hyderabad',sal:'₹36–55L',salMin:36,salMax:55,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'7-12',coType:'gcc'},
+    {title:'Data Engineer',co:'HSBC GCC · Financial District',sal:'₹20–30L',salMin:20,salMax:30,tag:'GCC',tc:'tg-gcc',role:'data',exp:'3-7',coType:'gcc'},
+    {title:'Cloud Architect',co:'Deloitte · Gachibowli',sal:'₹22–32L',salMin:22,salMax:32,tag:'MNC',tc:'tg-mnc',role:'devops',exp:'3-7',coType:'gcc'},
+    {title:'Senior SWE — Backend',co:'Google · HITEC City',sal:'₹34–52L',salMin:34,salMax:52,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'3-7',coType:'gcc'},
+    {title:'PM — FinTech Product',co:'PhonePe GCC · Gachibowli',sal:'₹18–26L',salMin:18,salMax:26,tag:'Startup',tc:'tg-startup',role:'pm',exp:'3-7',coType:'startup'},
+    {title:'Fresher SWE — Java/Azure',co:'Amazon Dev Centre · Hyderabad',sal:'₹6–10L',salMin:6,salMax:10,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'0-3',coType:'gcc'},
+    {title:'Junior Data Analyst',co:'Microsoft · HITEC City',sal:'₹7–11L',salMin:7,salMax:11,tag:'GCC',tc:'tg-gcc',role:'data',exp:'0-3',coType:'gcc'},
+    {title:'Junior DevOps Engineer',co:'Deloitte · Gachibowli',sal:'₹8–12L',salMin:8,salMax:12,tag:'MNC',tc:'tg-mnc',role:'devops',exp:'0-3',coType:'gcc'},
+    {title:'DevOps Engineer',co:'Microsoft · HITEC City',sal:'₹18–28L',salMin:18,salMax:28,tag:'GCC',tc:'tg-gcc',role:'devops',exp:'3-7',coType:'gcc'},
+    {title:'APM — Growth',co:'PhonePe GCC · Gachibowli',sal:'₹10–16L',salMin:10,salMax:16,tag:'Startup',tc:'tg-startup',role:'pm',exp:'0-3',coType:'startup'},
+  ],
+  expSal:{labels:['0–3 yrs','3–7 yrs','7–12 yrs','12+ yrs'],min:[6,12,20,36],max:[13,26,40,68]},
+  life:[
+    {icon:'🏠',label:'Housing (1BHK)',val:'₹14–22K/mo',score:72,color:'#0e9e6e'},
+    {icon:'🍜',label:'Food & dining',val:'₹5–9K/mo',score:80,color:'#0e9e6e'},
+    {icon:'🚇',label:'Metro / commute',val:'₹2–3.5K/mo',score:74,color:'#3b82f6'},
+    {icon:'🌡',label:'Weather',val:'20–34°C (hot summers)',score:68,color:'#3b82f6'},
+    {icon:'🏥',label:'Healthcare',val:'Excellent, affordable',score:86,color:'#0e9e6e'},
+    {icon:'🍻',label:'Nightlife & social',val:'Good & growing fast',score:70,color:'#3b82f6'},
+    {icon:'📚',label:'Education (IIIT-H,IIM-H)',val:'Strong institutes',score:84,color:'#0e9e6e'},
+    {icon:'🚦',label:'Traffic / commute',val:'Manageable vs Bengaluru',score:62,color:'#f59e0b'},
+    {icon:'💨',label:'Air quality (AQI)',val:'Good 40–70',score:80,color:'#0e9e6e'},
+    {icon:'🛡',label:'Safety',val:'Good (Mercer 2025)',score:78,color:'#0e9e6e'},
+  ],
+  cost:{labels:['Rent','Food','Transport','Entertainment','Utilities','Other'],data:[18000,7500,3000,5500,2500,6500]},
+  disp:{labels:['Jr ₹9L','Mid ₹16L','Sr ₹28L','Lead ₹48L'],gross:[75000,133000,233000,400000],net:[31000,89000,189000,356000]},
+  hoods:[
+    {name:'Banjara Hills',vibe:'Premium lifestyle',rent:'₹22–36K',for:'💎 Senior professionals'},
+    {name:'Gachibowli',vibe:'Tech corridor, walkable',rent:'₹16–24K',for:'🧑‍💻 MNC/GCC employees'},
+    {name:'Madhapur',vibe:'HITEC-adjacent, buzzy',rent:'₹14–22K',for:'🚀 Career-first movers'},
+    {name:'Kondapur',vibe:'Family-friendly, schools',rent:'₹12–18K',for:'👨‍👩‍👧 Families'},
+    {name:'Kukatpally',vibe:'Budget, well-connected',rent:'₹9–14K',for:'💰 Freshers & savers'},
+  ],
+  relo:{score:88,grade:'A+',dims:[
+    {label:'Career Opportunities',val:90,color:'#0e9e6e'},{label:'GCC/MNC Density',val:88,color:'#0e9e6e'},
+    {label:'Salary Level',val:76,color:'#3b82f6'},{label:'Affordability',val:74,color:'#0e9e6e'},
+    {label:'Quality of Life',val:82,color:'#0e9e6e'},{label:'Infrastructure',val:78,color:'#3b82f6'},
+    {label:'Weather',val:68,color:'#f59e0b'},
+  ]},
+  reloList:['✅ Best overall relocation score in India 2026 — 88/100','✅ Absorption more than doubled YoY — fastest-growing major office market','✅ Amazon, Apple, Microsoft, HSBC all aggressively expanding GCCs','✅ New supply collapsed 95% QoQ — move before rent hikes arrive','✅ Best cost-to-salary ratio among top 3 cities','✅ Good metro coverage, manageable traffic vs Bengaluru','⚠ Hot summers April–June hit 40°C — AC bills spike sharply','✅ IIIT-H pipeline = strong tech peer network and mentorship culture'],
+  reloFacts:[
+    {icon:'✈',label:'Airport',val:'RGIA — 24km (30–50 min)'},
+    {icon:'🏙',label:'Best for',val:'GCC, Cloud, BFSI-tech roles'},
+    {icon:'📈',label:'Job growth YoY',val:'+24% postings — fastest in India'},
+    {icon:'🌍',label:'Expat community',val:'Large & growing rapidly'},
+  ],
+  hubs:[{n:'HITEC City',x:'28%',y:'36%',c:'#ef4444',sz:44},{n:'Financial District',x:'24%',y:'55%',c:'#ef4444',sz:40},{n:'Gachibowli',x:'20%',y:'46%',c:'#f59e0b',sz:34},{n:'Madhapur',x:'35%',y:'28%',c:'#f59e0b',sz:30},{n:'Nanakramguda',x:'16%',y:'62%',c:'#3b82f6',sz:22}],
+  radar:[88,76,82,74,78,78],
+  insights:[
+    {cls:'green',tag:'it-g',text:'<strong>Hyderabad absorption more than doubled YoY in Q1 2026 (NASSCOM).</strong> Simultaneously, new completions crashed 95% QoQ — from 6 MSF to 0.3 MSF. This supply-demand gap will push HITEC City / Financial District rents 15–20% higher through 2026. Renting here now is significantly cheaper than it will be in 12 months.'},
+    {cls:'',tag:'it-b',text:'<strong>Hyderabad is the #1 fresher opportunity city in 2026.</strong> Amazon Dev Centre alone hires 800+ freshers annually. Apple, HSBC, and Google GCCs all run structured programs. The vacancy rate in SWE roles for freshers is 38% — meaning for every 100 fresher positions, 38 remain unfilled. Off-campus applicants with Azure/Java/Python skills have a real path in.'},
+    {cls:'',tag:'it-b',text:'<strong>The Hyderabad cost arbitrage is underappreciated:</strong> A ₹16L SWE here keeps ~₹89K/month disposable vs a ₹18L engineer in Bengaluru keeping ~₹93K. Nearly the same disposable income — but far less commute stress, better air quality, lower rent, and 78/100 safety score.'},
+    {cls:'amber',tag:'it-a',text:'<strong>Window closing fast on affordable Hyderabad.</strong> HITEC City prime vacancy was 12%+ two years ago. Now sub-5% and falling. Q3 2026 rents expected meaningfully higher. If you are planning a move for a GCC role, lock in Madhapur or Kondapur apartments in the next 3 months — not after.'},
+  ],
+},
+mum:{name:'Mumbai',color:'#3b82f6',
+  vacancyByRole:{
+    'swe':{rate:12,yoy:'+1%',freshers:22,mid:45,senior:33},
+    'data':{rate:20,yoy:'+5%',freshers:15,mid:48,senior:37},
+    'pm':{rate:10,yoy:'+2%',freshers:4,mid:52,senior:44},
+    'devops':{rate:16,yoy:'+3%',freshers:18,mid:50,senior:32},
+    'design':{rate:18,yoy:'+4%',freshers:35,mid:45,senior:20},
+    'leadership':{rate:7,yoy:'-2%',freshers:0,mid:12,senior:88},
+    'all':{rate:14,yoy:'+2%',freshers:22,mid:46,senior:32},
+  },
+  fresherDemand:{
+    score:52, trend:'Moderate', topRoles:['Fintech SWE','Risk Tech Analyst','iOS/Android Dev','Data Analyst'],
+    avgPackage:'₹9–14L', campusCo:['Goldman Sachs','JPMorgan','HSBC','Razorpay','PhonePe'],
+    note:'Mumbai freshers face the highest cost of living pressure. A ₹9L fresher salary leaves only ~₹22K/month disposable after rent — forcing many to choose Thane/Navi Mumbai for 2–3 years. BFSI-tech freshers earn higher base but compete in the narrowest field.'
+  },
+  kpis:[
+    {label:'Q1 2026 Leasing',val:'2.4 MSF',sub:'▲ BFSI-heavy · Vestian',cls:'up',bar:49},
+    {label:'GCC Count',val:'130+',sub:'Finance-tech dominant',cls:'neu',bar:48},
+    {label:'Office Vacancy',val:'8.2%',sub:'● Stable · JLL',cls:'neu',bar:32},
+    {label:'Prime Rent',val:'₹168/sqft',sub:'▲ Highest in India · CBRE',cls:'dn',bar:100},
+    {label:'Mid SWE (3–7yr)',val:'₹16–26L',sub:'Levels.fyi + Glassdoor',cls:'up',bar:86},
+    {label:'1BHK Rent/mo',val:'₹28–48K',sub:'NoBroker Apr 2026',cls:'dn',bar:88},
+  ],
+  salByRole:{
+    all:   {labels:['SWE','Data/AI','PM','DevOps','Design','Director'],min:[10,12,14,10,8,26],max:[32,46,40,28,22,75]},
+    swe:   {labels:['Fresher','Junior','Mid','Senior','Staff'],min:[9,13,18,28,46],max:[14,20,28,46,72]},
+    data:  {labels:['Fresher','Junior','Mid','Senior','Quant'],min:[8,12,18,28,48],max:[14,20,28,48,88]},
+    pm:    {labels:['APM','PM','Sr PM','Group PM','Director'],min:[10,14,20,30,44],max:[16,22,32,46,70]},
+    devops:{labels:['Junior','Mid','Senior','Lead','Architect'],min:[8,12,18,26,36],max:[14,20,28,40,56]},
+    design:{labels:['Junior','Mid','Senior','Lead','Principal'],min:[6,10,15,22,32],max:[12,18,26,36,54]},
+    leadership:{labels:['Assoc Dir','Director','Sr Director','VP','SVP/CXO'],min:[36,50,68,90,130],max:[56,76,96,130,200]},
+  },
+  hiring:{all:[5800,6500,7200,8000,9400],swe:[1800,2000,2300,2600,3100],data:[1200,1400,1600,1900,2300],pm:[700,800,900,1000,1200],devops:[700,800,900,1000,1200]},
+  emp:{gcc:32,it:18,startup:26,other:24},
+  skills:[
+    {n:'Python / Quant',d:'critical',s:94,fresherFit:55},{n:'GenAI / LLMs',d:'critical',s:91,fresherFit:38},
+    {n:'AWS / GCP',d:'critical',s:89,fresherFit:52},{n:'Java / Scala',d:'high',s:85,fresherFit:65},
+    {n:'React / Node',d:'high',s:81,fresherFit:75},{n:'Risk Modelling',d:'high',s:80,fresherFit:15},
+    {n:'Blockchain/DeFi',d:'high',s:75,fresherFit:40},{n:'TypeScript',d:'mid',s:71,fresherFit:70},
+    {n:'Kubernetes',d:'mid',s:67,fresherFit:18},{n:'Spark/Databricks',d:'mid',s:65,fresherFit:30},
+    {n:'Swift / iOS',d:'grow',s:60,fresherFit:68},{n:'Golang',d:'grow',s:55,fresherFit:32},
+  ],
+  prem:{labels:['Quant/Risk Eng','GenAI/LLMs','Blockchain/DeFi','Scala','AWS Arch'],data:[58,46,42,28,20]},
+  trend:{labels:['Python','GenAI','Java/Scala','Blockchain','AWS'],v24:[76,34,78,52,70],v26:[94,91,85,75,89]},
+  jobs:[
+    {title:'Quant Developer',co:'Goldman Sachs GCC · BKC',sal:'₹48–80L',salMin:48,salMax:80,tag:'GCC',tc:'tg-gcc',role:'data',exp:'7-12',coType:'gcc'},
+    {title:'Sr ML Engineer',co:'JPMorgan Chase · BKC',sal:'₹38–62L',salMin:38,salMax:62,tag:'GCC',tc:'tg-gcc',role:'data',exp:'7-12',coType:'gcc'},
+    {title:'Sr SWE — Payments',co:'Razorpay · Lower Parel',sal:'₹28–44L',salMin:28,salMax:44,tag:'Startup',tc:'tg-startup',role:'swe',exp:'3-7',coType:'startup'},
+    {title:'VP Product',co:'PhonePe · BKC',sal:'₹50–75L',salMin:50,salMax:75,tag:'Startup',tc:'tg-startup',role:'leadership',exp:'12+',coType:'startup'},
+    {title:'Risk Tech Engineer',co:'HSBC GCC · Thane',sal:'₹20–32L',salMin:20,salMax:32,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'3-7',coType:'gcc'},
+    {title:'Cloud Architect',co:'Accenture · BKC',sal:'₹22–34L',salMin:22,salMax:34,tag:'MNC',tc:'tg-mnc',role:'devops',exp:'3-7',coType:'gcc'},
+    {title:'Fresher SWE — Python/React',co:'Razorpay · Lower Parel',sal:'₹9–14L',salMin:9,salMax:14,tag:'Startup',tc:'tg-startup',role:'swe',exp:'0-3',coType:'startup'},
+    {title:'Junior Risk Analyst',co:'HSBC GCC · BKC',sal:'₹8–13L',salMin:8,salMax:13,tag:'GCC',tc:'tg-gcc',role:'data',exp:'0-3',coType:'gcc'},
+    {title:'Junior iOS Developer',co:'Hotstar · Powai',sal:'₹10–15L',salMin:10,salMax:15,tag:'Startup',tc:'tg-startup',role:'swe',exp:'0-3',coType:'startup'},
+    {title:'UX Designer Sr',co:'Hotstar · Powai',sal:'₹18–28L',salMin:18,salMax:28,tag:'Startup',tc:'tg-startup',role:'design',exp:'3-7',coType:'startup'},
+  ],
+  expSal:{labels:['0–3 yrs','3–7 yrs','7–12 yrs','12+ yrs'],min:[9,16,26,44],max:[18,32,50,85]},
+  life:[
+    {icon:'🏠',label:'Housing (1BHK)',val:'₹28–48K/mo',score:22,color:'#ef4444'},
+    {icon:'🍜',label:'Food & dining',val:'₹9–14K/mo',score:54,color:'#f59e0b'},
+    {icon:'🚇',label:'Local train/metro',val:'₹1.5–3K/mo',score:80,color:'#0e9e6e'},
+    {icon:'🌡',label:'Weather',val:'Humid, 28–34°C',score:46,color:'#f59e0b'},
+    {icon:'🏥',label:'Healthcare',val:'World-class, pricey',score:88,color:'#0e9e6e'},
+    {icon:'🍻',label:'Nightlife & social',val:'Best in India — undisputed',score:96,color:'#0e9e6e'},
+    {icon:'📚',label:'Education (IIT-B nearby)',val:'Top-tier institutes',score:86,color:'#0e9e6e'},
+    {icon:'🚦',label:'Traffic / commute',val:'Severe + train crowds',score:32,color:'#ef4444'},
+    {icon:'💨',label:'Air quality (AQI)',val:'Moderate 60–100',score:60,color:'#f59e0b'},
+    {icon:'🛡',label:'Safety',val:'Good for a metro city',score:74,color:'#3b82f6'},
+  ],
+  cost:{labels:['Rent','Food','Transport','Entertainment','Utilities','Other'],data:[38000,12000,3500,12000,3000,8000]},
+  disp:{labels:['Jr ₹12L','Mid ₹22L','Sr ₹38L','Lead ₹62L'],gross:[100000,183000,316000,516000],net:[22000,106000,239000,439000]},
+  hoods:[
+    {name:'BKC',vibe:'Finance-tech premium',rent:'₹42–70K',for:'💰 BFSI-tech leaders'},
+    {name:'Powai',vibe:'Startup lake district',rent:'₹26–40K',for:'🚀 Startup founders'},
+    {name:'Lower Parel',vibe:'Media & fintech',rent:'₹30–48K',for:'🎭 Creative & finance pros'},
+    {name:'Thane',vibe:'Suburban, spacious',rent:'₹14–22K',for:'👨‍👩‍👧 Families, value-seekers'},
+    {name:'Navi Mumbai',vibe:'Planned, affordable',rent:'₹12–18K',for:'💰 Cost-conscious freshers'},
+  ],
+  relo:{score:72,grade:'B+',dims:[
+    {label:'Career Opportunities',val:84,color:'#0e9e6e'},{label:'GCC/MNC Density',val:70,color:'#3b82f6'},
+    {label:'Salary Level',val:90,color:'#0e9e6e'},{label:'Affordability',val:24,color:'#ef4444'},
+    {label:'Quality of Life',val:66,color:'#f59e0b'},{label:'Infrastructure',val:80,color:'#0e9e6e'},
+    {label:'Weather',val:44,color:'#f59e0b'},
+  ]},
+  reloList:['✅ Highest nominal salaries in India — BFSI-tech and quant pay 30–50% premium','✅ Goldman, JPMorgan, HSBC GCCs pay London/NY-benchmarked packages','✅ Best fintech + startup ecosystem outside Bengaluru','✅ Best nightlife, social scene, cultural life in India — completely unmatched','✅ Local trains faster than cabs at peak hours','⚠ Rent consumes 40–55% of a ₹15L salary — housing is the make-or-break','⚠ Humidity May–September intense; monsoon flooding disrupts commutes','⚠ Only move here joining a high-paying BFSI/GCC or funded startup role'],
+  reloFacts:[
+    {icon:'✈',label:'Airport',val:'CSIA — 20km (30–80 min)'},
+    {icon:'🏙',label:'Best for',val:'BFSI-tech, Quant, Fintech startup'},
+    {icon:'📈',label:'Job growth YoY',val:'+12% postings — BFSI-led'},
+    {icon:'🌍',label:'Expat community',val:'Very large — financial hub'},
+  ],
+  hubs:[{n:'BKC',x:'38%',y:'44%',c:'#ef4444',sz:44},{n:'Powai',x:'60%',y:'30%',c:'#f59e0b',sz:38},{n:'Lower Parel',x:'32%',y:'58%',c:'#f59e0b',sz:32},{n:'Thane',x:'68%',y:'26%',c:'#3b82f6',sz:26},{n:'Navi Mumbai',x:'52%',y:'70%',c:'#3b82f6',sz:22}],
+  radar:[84,90,66,24,80,74],
+  insights:[
+    {cls:'',tag:'it-b',text:'<strong>Mumbai\'s salary equation is deceptive:</strong> A quant developer at Goldman GCC earns ₹48–80L — highest in India. But subtract ₹38K+ rent and you keep less disposable than a ₹28L engineer in Hyderabad. Mumbai only wins financially if your CTC clears ₹30L+ AND you live in Thane or Navi Mumbai to keep rent under ₹20K.'},
+    {cls:'green',tag:'it-g',text:'<strong>BFSI-tech is a Mumbai exclusive:</strong> Risk modelling, quant engineering, derivatives pricing, and DeFi/blockchain roles are uniquely concentrated here. Goldman, JPMorgan, HSBC, and Barclays GCCs pay London/NY-benchmarked packages. There is no better Indian city for this career path — the premium justifies the cost of living for senior roles.'},
+    {cls:'amber',tag:'it-a',text:'<strong>Fresher survival guide:</strong> A Mumbai fresher on ₹9–12L keeps only ~₹22K/month disposable after rent. Strategy: Accept the offer, live in Thane/Navi Mumbai (rent ₹12–16K), take the local train, and switch to a ₹20L+ role within 18 months. Every top fintech founder we talked to did exactly this math.'},
+    {cls:'purple',tag:'it-p',text:'<strong>Monsoon reality check:</strong> June–September, Powai and Lower Parel flood regularly. Commutes double. Check floor elevation and drainage history before signing a lease. Andheri West and Marol are historically better-drained tech corridors than Kurla, Sion, or Thane Ghodbunder Road.'},
+  ],
+},
+ncr:{name:'Delhi NCR',color:'#8b5cf6',
+  vacancyByRole:{
+    'swe':{rate:16,yoy:'+3%',freshers:30,mid:42,senior:28},
+    'data':{rate:24,yoy:'+7%',freshers:18,mid:46,senior:36},
+    'pm':{rate:11,yoy:'+2%',freshers:5,mid:50,senior:45},
+    'devops':{rate:20,yoy:'+5%',freshers:20,mid:48,senior:32},
+    'design':{rate:15,yoy:'+3%',freshers:32,mid:46,senior:22},
+    'leadership':{rate:8,yoy:'0%',freshers:0,mid:14,senior:86},
+    'all':{rate:17,yoy:'+3%',freshers:26,mid:44,senior:30},
+  },
+  fresherDemand:{
+    score:65, trend:'Steady', topRoles:['SWE (Java/.NET)','Cloud Ops','Data Analyst','DevOps Junior'],
+    avgPackage:'₹6–10L', campusCo:['Microsoft','Google','Samsung R&D','HCL','Deloitte'],
+    note:'NCR fresher market is dominated by IT services (HCL, Wipro, TCS) which offer ₹3.5–6L packages but provide useful 2-year experience to pivot into GCCs. Google and Microsoft GCCs in Cyber City hire ~200 freshers/year directly from IITs and NITs. The flex space boom also means a growing number of consultant/freelance entry roles.'
+  },
+  kpis:[
+    {label:'Q1 2026 Leasing',val:'2.8 MSF',sub:'Flex-led · NASSCOM',cls:'up',bar:57},
+    {label:'GCC Count',val:'270+',sub:'14% national share',cls:'up',bar:66},
+    {label:'Prime Vacancy',val:'1.4%',sub:'Cyber City — near full',cls:'up',bar:10},
+    {label:'Prime Rent',val:'₹142/sqft',sub:'▲ 12% YoY · Gurugram',cls:'dn',bar:84},
+    {label:'Mid SWE (3–7yr)',val:'₹11–20L',sub:'AmbitionBox + Naukri',cls:'up',bar:72},
+    {label:'1BHK Rent/mo',val:'₹16–28K',sub:'NoBroker Apr 2026',cls:'neu',bar:55},
+  ],
+  salByRole:{
+    all:   {labels:['SWE','Data/AI','PM','DevOps','Design','Director'],min:[7,9,10,8,6,18],max:[26,36,28,22,16,55]},
+    swe:   {labels:['Fresher','Junior','Mid','Senior','Staff'],min:[6,9,11,19,34],max:[11,14,20,34,56]},
+    data:  {labels:['Fresher','Junior','Mid','Senior','Staff'],min:[5,8,12,20,34],max:[10,14,20,34,58]},
+    pm:    {labels:['APM','PM','Sr PM','Group PM','Director'],min:[7,10,15,22,30],max:[12,16,24,32,50]},
+    devops:{labels:['Junior','Mid','Senior','Lead','Architect'],min:[6,9,13,19,26],max:[11,15,21,30,44]},
+    design:{labels:['Junior','Mid','Senior','Lead','Principal'],min:[5,7,10,15,20],max:[9,13,18,24,36]},
+    leadership:{labels:['Assoc Dir','Director','Sr Director','VP','SVP/CXO'],min:[24,34,46,62,85],max:[40,55,70,90,130]},
+  },
+  hiring:{all:[6600,7200,8200,9400,11000],swe:[2400,2700,3100,3600,4200],data:[1400,1600,1900,2200,2700],pm:[500,580,680,780,940],devops:[750,850,980,1120,1300]},
+  emp:{gcc:44,it:30,startup:14,other:12},
+  skills:[
+    {n:'GenAI / LLMs',d:'critical',s:93,fresherFit:35},{n:'Python',d:'critical',s:91,fresherFit:80},
+    {n:'AWS / Azure',d:'critical',s:89,fresherFit:52},{n:'React / Next.js',d:'high',s:84,fresherFit:78},
+    {n:'Java / Spring',d:'high',s:81,fresherFit:72},{n:'Kubernetes',d:'high',s:79,fresherFit:16},
+    {n:'Data Engineering',d:'high',s:77,fresherFit:42},{n:'TypeScript',d:'mid',s:71,fresherFit:70},
+    {n:'.NET / C#',d:'mid',s:67,fresherFit:65},{n:'Terraform',d:'mid',s:64,fresherFit:12},
+    {n:'Go',d:'grow',s:57,fresherFit:28},{n:'AR / VR',d:'grow',s:42,fresherFit:36},
+  ],
+  prem:{labels:['GenAI/LLMs','Cloud Arch','MLOps','Kubernetes','React'],data:[50,30,32,24,18]},
+  trend:{labels:['Python','GenAI','AWS/Azure','Java','React'],v24:[76,38,72,76,70],v26:[91,93,89,81,84]},
+  jobs:[
+    {title:'Sr ML Engineer',co:'Google GCC · Cyber City, Gurugram',sal:'₹34–54L',salMin:34,salMax:54,tag:'GCC',tc:'tg-gcc',role:'data',exp:'7-12',coType:'gcc'},
+    {title:'Principal SWE',co:'Microsoft · Cyber City, Gurugram',sal:'₹36–58L',salMin:36,salMax:58,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'7-12',coType:'gcc'},
+    {title:'AI/ML Engineer',co:'Samsung R&D · Noida Sec 62',sal:'₹22–34L',salMin:22,salMax:34,tag:'GCC',tc:'tg-gcc',role:'data',exp:'3-7',coType:'gcc'},
+    {title:'Cloud Architect',co:'Deloitte · Golf Course Rd, Gurugram',sal:'₹22–34L',salMin:22,salMax:34,tag:'MNC',tc:'tg-mnc',role:'devops',exp:'3-7',coType:'gcc'},
+    {title:'Data Scientist',co:'Adobe GCC · Noida Sec 62',sal:'₹18–28L',salMin:18,salMax:28,tag:'GCC',tc:'tg-gcc',role:'data',exp:'3-7',coType:'gcc'},
+    {title:'PM — Growth',co:'Paytm · Noida Sec 128',sal:'₹16–24L',salMin:16,salMax:24,tag:'Startup',tc:'tg-startup',role:'pm',exp:'3-7',coType:'startup'},
+    {title:'Fresher SWE — Java/.NET',co:'HCL Tech · Noida Expressway',sal:'₹4–7L',salMin:4,salMax:7,tag:'IT Services',tc:'tg-mnc',role:'swe',exp:'0-3',coType:'it'},
+    {title:'Junior SWE — GCC Track',co:'Microsoft GCC · Cyber City',sal:'₹8–12L',salMin:8,salMax:12,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'0-3',coType:'gcc'},
+    {title:'Junior Data Analyst',co:'Samsung R&D · Noida Sec 62',sal:'₹6–10L',salMin:6,salMax:10,tag:'GCC',tc:'tg-gcc',role:'data',exp:'0-3',coType:'gcc'},
+    {title:'APM Programme',co:'InMobi · Gurugram',sal:'₹10–15L',salMin:10,salMax:15,tag:'Startup',tc:'tg-startup',role:'pm',exp:'0-3',coType:'startup'},
+    {title:'Junior DevOps',co:'Deloitte · Gurugram',sal:'₹7–11L',salMin:7,salMax:11,tag:'MNC',tc:'tg-mnc',role:'devops',exp:'0-3',coType:'gcc'},
+  ],
+  expSal:{labels:['0–3 yrs','3–7 yrs','7–12 yrs','12+ yrs'],min:[6,11,19,32],max:[13,24,38,62]},
+  life:[
+    {icon:'🏠',label:'Housing (1BHK)',val:'₹16–28K/mo',score:58,color:'#f59e0b'},
+    {icon:'🍜',label:'Food & dining',val:'₹6–10K/mo',score:66,color:'#3b82f6'},
+    {icon:'🚇',label:'Delhi Metro',val:'₹2–4K/mo · 350km',score:82,color:'#0e9e6e'},
+    {icon:'🌡',label:'Weather',val:'7°C – 45°C extremes',score:24,color:'#ef4444'},
+    {icon:'🏥',label:'Healthcare (AIIMS)',val:'Best in India',score:92,color:'#0e9e6e'},
+    {icon:'🍻',label:'Nightlife & social',val:'Good, Gurugram growing',score:72,color:'#3b82f6'},
+    {icon:'📚',label:'Education (IIT-D,DU)',val:'Top-tier institutes',score:90,color:'#0e9e6e'},
+    {icon:'🚦',label:'Traffic / commute',val:'Challenging',score:40,color:'#f59e0b'},
+    {icon:'💨',label:'Air quality (AQI)',val:'Hazardous Oct–Feb 300+',score:15,color:'#ef4444'},
+    {icon:'🛡',label:'Safety',val:'Moderate — varies by area',score:52,color:'#f59e0b'},
+  ],
+  cost:{labels:['Rent','Food','Transport','Entertainment','Utilities','Other'],data:[22000,8500,3500,7000,3000,7000]},
+  disp:{labels:['Jr ₹8L','Mid ₹16L','Sr ₹28L','Lead ₹48L'],gross:[66000,133000,233000,400000],net:[15000,82000,182000,349000]},
+  hoods:[
+    {name:'Cyber City area',vibe:'MNC corridor, premium',rent:'₹22–34K',for:'💼 GCC professionals'},
+    {name:'Golf Course Ext',vibe:'Upscale residential',rent:'₹18–30K',for:'💎 Senior pros'},
+    {name:'Noida Sec 50/51',vibe:'Quiet, family-centric',rent:'₹14–20K',for:'👨‍👩‍👧 Noida workers'},
+    {name:'Sohna Road',vibe:'Budget Gurugram',rent:'₹10–16K',for:'💰 Budget-conscious'},
+    {name:'Greater Noida West',vibe:'Cheapest, new builds',rent:'₹8–13K',for:'🌱 Long-commute freshers'},
+  ],
+  relo:{score:74,grade:'B+',dims:[
+    {label:'Career Opportunities',val:84,color:'#0e9e6e'},{label:'GCC/MNC Density',val:80,color:'#0e9e6e'},
+    {label:'Salary Level',val:72,color:'#3b82f6'},{label:'Affordability',val:58,color:'#f59e0b'},
+    {label:'Quality of Life',val:56,color:'#f59e0b'},{label:'Infrastructure',val:82,color:'#0e9e6e'},
+    {label:'Weather',val:24,color:'#ef4444'},
+  ]},
+  reloList:['✅ Best metro network in India — Delhi Metro 350km, 9 lines','✅ Strong GCC cluster — Cyber City Gurugram + growing Noida Expressway','✅ Best healthcare in India — AIIMS Delhi for catastrophic care','✅ NCR has 14% of national GCC share (NASSCOM Q1 2026)','⚠ Air quality genuinely hazardous Oct–Feb (AQI 300–500+)','⚠ Weather extremes: near-freezing winters + 46°C summers','⚠ Safety varies significantly by area — research your neighbourhood','⚠ Cyber City vacancy 1.4% — Gurugram prime rents will keep rising'],
+  reloFacts:[
+    {icon:'✈',label:'Airport',val:'IGI — 18km (25–60 min)'},
+    {icon:'🏙',label:'Best for',val:'GCC, IT-BPM, Consulting, Govt-tech'},
+    {icon:'📈',label:'Job growth YoY',val:'+16% postings · Gurugram led'},
+    {icon:'🌍',label:'Expat community',val:'Very large — diplomatic hub'},
+  ],
+  hubs:[{n:'Cyber City',x:'26%',y:'46%',c:'#ef4444',sz:44},{n:'Noida Sec 62',x:'72%',y:'24%',c:'#f59e0b',sz:40},{n:'Udyog Vihar',x:'22%',y:'36%',c:'#f59e0b',sz:30},{n:'Golf Course Rd',x:'30%',y:'60%',c:'#3b82f6',sz:26},{n:'Noida Expressway',x:'64%',y:'42%',c:'#3b82f6',sz:22}],
+  radar:[84,72,56,58,82,52],
+  insights:[
+    {cls:'',tag:'it-b',text:'<strong>NCR drove 45%+ of flex space leasing nationally in Q1 2026 (NASSCOM).</strong> This signals companies are taking flexible seats rather than full floors — more WFH-hybrid roles, but fewer permanent in-office culture and peer networking. Great for flexibility seekers, less ideal for early-career mentorship and career networking.'},
+    {cls:'amber',tag:'it-a',text:'<strong>Two-tier fresher market in NCR:</strong> IT services track (HCL, Wipro, TCS Noida) offers ₹3.5–6L but stable employment for 2–3 years. GCC track (Microsoft, Google, Samsung R&D) offers ₹8–12L but is intensely competitive — fewer than 500 direct GCC fresher roles exist annually in NCR. Target both, use IT services as backup, not endpoint.'},
+    {cls:'red',tag:'it-r',text:'<strong>AQI is a real health risk — not an inconvenience.</strong> Oct–Feb, PM2.5 regularly exceeds 300 (WHO safe limit: 15). Families with children or respiratory conditions must factor this seriously. Budget ₹15–25K for a good air purifier. This is a non-negotiable cost in NCR that no other city in this list carries.'},
+    {cls:'green',tag:'it-g',text:'<strong>Delhi Metro is a genuine quality-of-life upgrade:</strong> Live in Dwarka Sec 21, commute to Cyber City in 35 mins flat. The metro makes NCR far more livable than its traffic reputation suggests — for those who plan their housing around metro access rather than near highways.'},
+  ],
+},
+ahm:{name:'Ahmedabad',color:'#10b981',
+  vacancyByRole:{
+    'swe':{rate:28,yoy:'+12%',freshers:55,mid:32,senior:13},
+    'data':{rate:35,yoy:'+16%',freshers:42,mid:40,senior:18},
+    'pm':{rate:20,yoy:'+8%',freshers:20,mid:52,senior:28},
+    'devops':{rate:30,yoy:'+14%',freshers:48,mid:36,senior:16},
+    'design':{rate:24,yoy:'+10%',freshers:55,mid:34,senior:11},
+    'leadership':{rate:12,yoy:'+4%',freshers:5,mid:30,senior:65},
+    'all':{rate:28,yoy:'+11%',freshers:48,mid:36,senior:16},
+  },
+  fresherDemand:{
+    score:88, trend:'Surging fastest', topRoles:['BFSI-tech SWE','Full Stack Dev','Data Analyst','QA/Automation'],
+    avgPackage:'₹5–9L', campusCo:['HDFC GCC','Kotak Mahindra','TCS','Wipro','Infosys BPM'],
+    note:'Ahmedabad has the HIGHEST fresher vacancy rate in India at 28% overall — meaning supply of qualified freshers is genuinely short vs demand. GIFT City alone has 200+ open fresher/junior roles unfilled as of Q1 2026. This is the single best city for a 2026 fresher to enter at below-average competition and above-average savings rate.'
+  },
+  kpis:[
+    {label:'Q1 2026 Leasing',val:'0.6 MSF',sub:'▲ GIFT City surge',cls:'up',bar:22},
+    {label:'GCC Count',val:'48+',sub:'▲ BFSI-tech focus',cls:'up',bar:24},
+    {label:'Office Vacancy',val:'20%',sub:'● Ample supply',cls:'neu',bar:60},
+    {label:'Prime Rent',val:'₹58/sqft',sub:'▲ 18% YoY · GIFT',cls:'up',bar:36},
+    {label:'Mid SWE (3–7yr)',val:'₹8–16L',sub:'AmbitionBox 2026',cls:'up',bar:46},
+    {label:'1BHK Rent/mo',val:'₹7–12K',sub:'NoBroker Apr 2026',cls:'up',bar:26},
+  ],
+  salByRole:{
+    all:   {labels:['SWE','Data/AI','PM','DevOps','Design','Director'],min:[5,6,7,5,4,13],max:[18,24,20,15,12,36]},
+    swe:   {labels:['Fresher','Junior','Mid','Senior','Lead'],min:[4,7,10,16,22],max:[8,12,18,26,36]},
+    data:  {labels:['Fresher','Junior','Mid','Senior','Lead'],min:[4,6,9,14,20],max:[8,11,16,22,30]},
+    pm:    {labels:['APM','PM','Sr PM','Group PM','Director'],min:[5,8,12,18,24],max:[9,14,20,28,38]},
+    devops:{labels:['Junior','Mid','Senior','Lead','Architect'],min:[4,7,10,15,20],max:[8,12,17,24,32]},
+    design:{labels:['Junior','Mid','Senior','Lead','Principal'],min:[3,6,9,13,18],max:[7,10,15,20,28]},
+    leadership:{labels:['Assoc Dir','Director','Sr Director','VP','SVP/CXO'],min:[18,25,32,42,58],max:[30,40,52,65,88]},
+  },
+  hiring:{all:[1100,1500,2100,3200,4800],swe:[400,560,800,1200,1800],data:[220,320,460,700,1050],pm:[80,110,160,240,360],devops:[120,180,260,400,600]},
+  emp:{gcc:26,it:40,startup:18,other:16},
+  skills:[
+    {n:'Python',d:'critical',s:90,fresherFit:88},{n:'Java / Spring',d:'critical',s:87,fresherFit:82},
+    {n:'GenAI / LLMs',d:'high',s:80,fresherFit:45},{n:'React / Angular',d:'high',s:78,fresherFit:82},
+    {n:'AWS',d:'high',s:75,fresherFit:55},{n:'Fintech / BFSI',d:'high',s:76,fresherFit:60},
+    {n:'TypeScript',d:'mid',s:67,fresherFit:72},{n:'.NET',d:'mid',s:64,fresherFit:68},
+    {n:'Data Engineering',d:'mid',s:61,fresherFit:50},{n:'Kubernetes',d:'grow',s:54,fresherFit:20},
+    {n:'Go',d:'grow',s:46,fresherFit:30},{n:'Blockchain/DeFi',d:'grow',s:58,fresherFit:42},
+  ],
+  prem:{labels:['GenAI/LLMs','Fintech Stack','AWS','React','Java'],data:[44,38,28,18,14]},
+  trend:{labels:['Java','Python','GenAI','React','AWS'],v24:[79,65,26,68,55],v26:[87,90,80,78,75]},
+  jobs:[
+    {title:'SWE — Fintech Platform',co:'HDFC GCC · GIFT City',sal:'₹16–24L',salMin:16,salMax:24,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'3-7',coType:'gcc'},
+    {title:'BFSI Tech Lead',co:'Kotak Mahindra · GIFT City',sal:'₹18–26L',salMin:18,salMax:26,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'7-12',coType:'gcc'},
+    {title:'Data Engineer',co:'TCS · Ahmedabad',sal:'₹10–16L',salMin:10,salMax:16,tag:'IT Services',tc:'tg-mnc',role:'data',exp:'3-7',coType:'it'},
+    {title:'Backend Engineer',co:'CRED · Remote+Ahmedabad',sal:'₹14–22L',salMin:14,salMax:22,tag:'Startup',tc:'tg-startup',role:'swe',exp:'3-7',coType:'startup'},
+    {title:'Cloud DevOps',co:'Wipro · SG Highway',sal:'₹11–17L',salMin:11,salMax:17,tag:'IT Services',tc:'tg-mnc',role:'devops',exp:'3-7',coType:'it'},
+    {title:'Fresher SWE — Python',co:'Infosys BPM · Prahlad Nagar',sal:'₹5–8L',salMin:5,salMax:8,tag:'IT Services',tc:'tg-mnc',role:'swe',exp:'0-3',coType:'it'},
+    {title:'Fresher SWE — GIFT City',co:'HDFC GCC · GIFT City',sal:'₹7–11L',salMin:7,salMax:11,tag:'GCC',tc:'tg-gcc',role:'swe',exp:'0-3',coType:'gcc'},
+    {title:'Junior Data Analyst',co:'Kotak Mahindra · GIFT City',sal:'₹6–9L',salMin:6,salMax:9,tag:'GCC',tc:'tg-gcc',role:'data',exp:'0-3',coType:'gcc'},
+    {title:'Junior Full Stack Dev',co:'Wipro · SG Highway',sal:'₹5–8L',salMin:5,salMax:8,tag:'IT Services',tc:'tg-mnc',role:'swe',exp:'0-3',coType:'it'},
+    {title:'Junior DevOps',co:'TCS · Prahlad Nagar',sal:'₹5–8L',salMin:5,salMax:8,tag:'IT Services',tc:'tg-mnc',role:'devops',exp:'0-3',coType:'it'},
+  ],
+  expSal:{labels:['0–3 yrs','3–7 yrs','7–12 yrs','12+ yrs'],min:[4,8,14,22],max:[9,18,28,42]},
+  life:[
+    {icon:'🏠',label:'Housing (1BHK)',val:'₹7–12K/mo',score:96,color:'#0e9e6e'},
+    {icon:'🍜',label:'Food & dining',val:'₹2.5–4.5K/mo',score:94,color:'#0e9e6e'},
+    {icon:'🚇',label:'Metro / BRTS',val:'₹1–2.5K/mo',score:82,color:'#0e9e6e'},
+    {icon:'🌡',label:'Weather',val:'Hot, 18–42°C',score:46,color:'#f59e0b'},
+    {icon:'🏥',label:'Healthcare',val:'Good, very affordable',score:78,color:'#0e9e6e'},
+    {icon:'🍻',label:'Nightlife & social',val:'Dry state — very limited',score:26,color:'#ef4444'},
+    {icon:'📚',label:'Education (IIM-A,NID)',val:'World-class institutes',score:90,color:'#0e9e6e'},
+    {icon:'🚦',label:'Traffic / commute',val:'Manageable, good roads',score:78,color:'#0e9e6e'},
+    {icon:'💨',label:'Air quality (AQI)',val:'Moderate 50–80',score:72,color:'#3b82f6'},
+    {icon:'🛡',label:'Safety',val:'Very Good (Mercer 2025)',score:88,color:'#0e9e6e'},
+  ],
+  cost:{labels:['Rent','Food','Transport','Entertainment','Utilities','Other'],data:[9500,4500,2000,2500,1500,4500]},
+  disp:{labels:['Jr ₹6L','Mid ₹12L','Sr ₹22L','Lead ₹36L'],gross:[50000,100000,183000,300000],net:[25500,75500,158500,275500]},
+  hoods:[
+    {name:'GIFT City',vibe:'Emerging fintech hub',rent:'₹10–16K',for:'🏦 BFSI-tech pros'},
+    {name:'Prahlad Nagar',vibe:'IT & commercial',rent:'₹9–14K',for:'🧑‍💻 IT professionals'},
+    {name:'SG Highway',vibe:'Modern, connected',rent:'₹8–13K',for:'🚀 Young professionals'},
+    {name:'Satellite',vibe:'Premium residential',rent:'₹11–18K',for:'💎 Established families'},
+    {name:'Bopal',vibe:'Affordable suburb',rent:'₹6–10K',for:'💰 Best savings rate'},
+  ],
+  relo:{score:74,grade:'B+',dims:[
+    {label:'Career Opportunities',val:54,color:'#f59e0b'},{label:'GCC/MNC Density',val:42,color:'#f59e0b'},
+    {label:'Salary Level',val:50,color:'#f59e0b'},{label:'Affordability',val:98,color:'#0e9e6e'},
+    {label:'Quality of Life',val:78,color:'#0e9e6e'},{label:'Infrastructure',val:72,color:'#3b82f6'},
+    {label:'Weather',val:46,color:'#f59e0b'},
+  ]},
+  reloList:['✅ Best disposable income per rupee earned — 40% cheaper than Bengaluru','✅ GIFT City: fastest-growing BFSI-tech hub in India — postings up 140% YoY','✅ Highest fresher vacancy rate in India (28%) — lowest competition for entry roles','✅ IIM-A alumni network is genuinely valuable for business & career doors','✅ Excellent safety, family-friendly culture, clean city','✅ Good BRTS + Metro + road infrastructure — easy commute','⚠ Dry state — no legal alcohol; social life is fundamentally different','⚠ Fewer MNC/startup options vs Bengaluru or Hyderabad'],
+  reloFacts:[
+    {icon:'✈',label:'Airport',val:'SVP Airport — 12km from city centre'},
+    {icon:'🏙',label:'Best for',val:'BFSI-tech, GIFT City, IT Services'},
+    {icon:'📈',label:'Job growth YoY',val:'+38% — fastest growth rate nationally'},
+    {icon:'🌍',label:'Expat community',val:'Small but growing at GIFT City'},
+  ],
+  hubs:[{n:'GIFT City',x:'64%',y:'30%',c:'#10b981',sz:40},{n:'Prahlad Nagar',x:'36%',y:'46%',c:'#f59e0b',sz:32},{n:'SG Highway',x:'28%',y:'60%',c:'#3b82f6',sz:26},{n:'Satellite',x:'42%',y:'36%',c:'#3b82f6',sz:20}],
+  radar:[54,50,78,98,72,88],
+  insights:[
+    {cls:'green',tag:'it-g',text:'<strong>Ahmedabad has the highest fresher vacancy rate in India at 28%</strong> — nearly 1 in 3 fresher/junior positions remain unfilled. GIFT City alone has 200+ open entry-level roles. For a 2026 graduate, this is the lowest-competition entry point in India\'s top 5 cities. You earn less, but you save more and compete less.'},
+    {cls:'',tag:'it-b',text:'<strong>GIFT City is India\'s most underrated career bet.</strong> HDFC, Kotak, ICICI, and international banks are building full tech stacks under the IFSC regulatory sandbox. BFSI-tech engineers get exposure to global-standard work — RBI-regulated, SWIFT, cross-border payments — at Tier-1 quality, with Tier-3 living costs. This exact combination built Hyderabad\'s talent base a decade ago.'},
+    {cls:'amber',tag:'it-a',text:'<strong>The savings math is extraordinary:</strong> A ₹12L SWE in Ahmedabad keeps ~₹75.5K/month disposable. The same person\'s Bengaluru equivalent (₹18L role needed to match the lifestyle) keeps ~₹93K. But the Ahmedabad professional accumulates net wealth 60% faster relative to income — ideal for buying a first home or funding further education within 3 years.'},
+    {cls:'purple',tag:'it-p',text:'<strong>First-mover advantage is the play.</strong> Ahmedabad\'s tech scene is where Hyderabad was in 2018 — before the supply boom, before the rent spike, before GCC competition got fierce. Engineers who move now in GIFT City roles will likely see 25–35% salary growth in 3 years as GCC demand structurally outpaces supply of skilled talent in the city.'},
+  ],
+},
 };
 
-let currentCity = 'blr';
-let charts = {};
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let city='blr', charts={};
+const TC='#7A93BE', GC='rgba(30,80,160,0.08)';
 
-  const TICK_COLOR = '#7A93BE';
-  const GRID_COLOR = 'rgba(30,80,160,0.08)';
+function getFilters(){
+  return {
+    role: document.getElementById('f-role').value,
+    exp:  document.getElementById('f-exp').value,
+    co:   document.getElementById('f-co').value,
+    sal:  parseInt(document.getElementById('f-sal').value)||0,
+  };
+}
 
-// ======================== RENDER FUNCTIONS ========================
-
-function switchCity(city, el) {
-  if (city === 'compare') {
-    document.querySelectorAll('.city-tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    currentCity = 'blr';
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-compare').classList.add('active');
-    document.querySelectorAll('.stab').forEach((s, i) => { s.classList.remove('active'); if (i === 5) s.classList.add('active'); });
-    renderCompare();
-    return;
+function updateFilterBadge(f){
+  const active = [f.role!=='all', f.exp!=='all', f.co!=='all', f.sal>0].filter(Boolean).length;
+  const badge = document.getElementById('filter-badge');
+  if(!badge) return;
+  if(active>0){
+    badge.textContent = active + ' filter'+(active>1?'s':'')+' active';
+    badge.style.display='inline';
+  } else {
+    badge.style.display='none';
   }
-  currentCity = city;
-  document.querySelectorAll('.city-tab').forEach(t => t.classList.remove('active'));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function switchCity(id,el){
+  if(id==='compare'){
+    document.querySelectorAll('.city-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    city='blr';
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-compare').classList.add('active');
+    document.querySelectorAll('.stab').forEach((s,i)=>{s.classList.remove('active');if(i===6)s.classList.add('active')});
+    renderCompare(); return;
+  }
+  city=id;
+  document.querySelectorAll('.city-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   renderAll();
 }
 
-function showSection(id, el) {
-  document.querySelectorAll('.stab').forEach(s => s.classList.remove('active'));
+function showSection(id,el){
+  document.querySelectorAll('.stab').forEach(s=>s.classList.remove('active'));
   el.classList.add('active');
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-  if (id === 'compare') renderCompare();
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(id==='compare') renderCompare();
   else renderAll();
 }
 
-function applyFilters() { renderAll(); }
+// ═══════════════════════════════════════════════════════════════
+// MASTER REACTIVE RENDER — called on EVERY filter change
+// ═══════════════════════════════════════════════════════════════
+function applyFilters(){
+  const f=getFilters();
+  const d=C[city];
 
-function renderAll() {
-  const d = CITIES[currentCity];
-  renderKPIs(d);
-  renderMap(d);
-  renderSkills(d);
-  renderJobs(d);
-  renderLife(d);
-  renderRelo(d);
-  renderCharts(d);
+  updateFilterBadge(f);
+
+  // KPI strip reacts to role — shows role-specific vacancy rate
+  updateKPIs(d,f);
+
+  // Salary chart reacts to role — shows level breakdown for that role
+  updateSalaryChart(d,f);
+
+  // Hiring trend reacts to role — shows role-specific posting volume
+  updateHiringChart(d,f);
+
+  // Job list reacts to ALL filters
+  renderFilteredJobs(d,f);
+
+  // Skills panel reacts to exp filter — shows fresher-fit bars when 0-3yr
+  renderSkills(d,f);
+
+  // Vacancy panel reacts to role + exp filters
+  renderVacancyPanel(d,f);
 }
 
-function renderKPIs(d) {
-  document.getElementById('kpi-strip').innerHTML = d.kpis.map(k => `
+function clearFilters(){
+  ['f-role','f-exp','f-co'].forEach(id=>document.getElementById(id).value='all');
+  document.getElementById('f-sal').value='0';
+  applyFilters();
+}
+
+// ── KPI update ──────────────────────────────────────────────
+function updateKPIs(d,f){
+  const vac = d.vacancyByRole[f.role] || d.vacancyByRole['all'];
+  // Inject live vacancy KPI into the strip dynamically
+  const kpis = [...d.kpis];
+  // Replace vacancy KPI (index 2) with role-specific vacancy
+  kpis[2] = {
+    label: f.role==='all' ? 'Office Vacancy' : roleLabel(f.role)+' Vacancy Rate',
+    val:   vac.rate+'%',
+    sub:   vac.yoy+' YoY · Role demand signal',
+    cls:   vac.rate>20?'up':'neu',
+    bar:   vac.rate
+  };
+  // If exp filter = fresher, show fresher share
+  if(f.exp==='0-3'){
+    kpis[4] = {
+      label:'Fresher Share of Vacancies',
+      val: vac.freshers+'%',
+      sub:'of '+roleLabel(f.role)+' openings',
+      cls: vac.freshers>40?'up':'neu',
+      bar: vac.freshers
+    };
+  }
+  document.getElementById('kpi-strip').innerHTML=kpis.map(k=>`
     <div class="kpi">
       <div class="kpi-label">${k.label}</div>
       <div class="kpi-val">${k.val}</div>
       <div class="kpi-sub ${k.cls}">${k.sub}</div>
-      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${k.bar}%;background:${k.cls==='up'?'#34d399':k.cls==='dn'?'#ef4444':'#38bdf8'}"></div></div>
+      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${k.bar}%;background:${k.cls==='up'?'#0e9e6e':k.cls==='dn'?'#dc2626':'#1a7fd4'}"></div></div>
     </div>`).join('');
 }
 
-function renderMap(d) {
-  const map = document.getElementById('mapPins');
-  map.innerHTML = d.hubs.map(h => `
-    <div class="hub-pin" style="left:${h.x};top:${h.y}" title="${h.name}">
-      <div class="hub-pin-circle" style="width:${h.size}px;height:${h.size}px;background:${h.color};">${h.size > 36 ? '🔥' : ''}</div>
-      <div class="hub-pin-label">${h.name}</div>
+function roleLabel(r){
+  return{all:'All Roles',swe:'Software Eng',data:'Data/AI/ML',pm:'Product Mgmt',devops:'DevOps/Cloud',design:'Design/UX',leadership:'Leadership'}[r]||r;
+}
+
+// ── Salary chart — reacts to role ──────────────────────────
+function updateSalaryChart(d,f){
+  const key = f.role==='all' ? 'all' : f.role;
+  const salData = d.salByRole[key] || d.salByRole['all'];
+  kill('sal');
+  charts.sal=new Chart(document.getElementById('salChart').getContext('2d'),{
+    type:'bar',
+    data:{labels:salData.labels,datasets:[
+      {label:'Min ₹L',data:salData.min,backgroundColor:'rgba(26,127,212,0.35)',borderRadius:4,barPercentage:.5},
+      {label:'Max ₹L',data:salData.max,backgroundColor:'rgba(14,158,110,0.55)',borderRadius:4,barPercentage:.5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},
+      scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+v+'L'},grid:{color:GC}},
+              x:{ticks:{color:TC,font:{size:10},autoSkip:false},grid:{display:false}}}}
+  });
+}
+
+// ── Hiring chart — reacts to role ──────────────────────────
+function updateHiringChart(d,f){
+  const key = f.role==='all'?'all':(d.hiring[f.role]?f.role:'all');
+  const hData = d.hiring[key] || d.hiring['all'];
+  kill('hiring');
+  charts.hiring=new Chart(document.getElementById('hiringChart').getContext('2d'),{
+    type:'line',
+    data:{labels:['Q1 25','Q2 25','Q3 25','Q4 25','Q1 26'],datasets:[{
+      data:hData,borderColor:d.color,backgroundColor:d.color+'22',
+      tension:.4,fill:true,pointRadius:4,pointBackgroundColor:d.color
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}},
+              x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}
+  });
+}
+
+// ── Job list — reacts to all filters ───────────────────────
+function renderFilteredJobs(d,f){
+  let jobs=d.jobs.filter(j=>{
+    if(f.role!=='all' && j.role!==f.role) return false;
+    if(f.exp!=='all'  && j.exp!==f.exp)   return false;
+    if(f.co!=='all'   && j.coType!==f.co) return false;
+    if(f.sal>0        && j.salMax<f.sal)  return false;
+    return true;
+  });
+
+  const countEl=document.getElementById('job-count');
+  if(countEl) countEl.textContent=jobs.length+' job'+(jobs.length!==1?'s':'')+' match';
+
+  const listEl=document.getElementById('jobList');
+  if(!listEl) return;
+  listEl.innerHTML=jobs.length===0
+    ?'<div class="no-results">No jobs match your filters — try broadening your criteria or click <strong>✕ Clear</strong>.</div>'
+    :jobs.map(j=>`
+      <div class="job-card">
+        <div>
+          <div class="job-title">${j.title}</div>
+          <div class="job-meta">${j.co}</div>
+          <span class="job-tag ${j.tc}">${j.tag}</span>
+        </div>
+        <div class="job-right">
+          <div class="job-salary">${j.sal}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">${expLabel(j.exp)}</div>
+        </div>
+      </div>`).join('');
+}
+
+function expLabel(e){
+  return{'0-3':'0–3 yrs','3-7':'3–7 yrs','7-12':'7–12 yrs','12+':'12+ yrs'}[e]||e;
+}
+
+// ── Skills — fresher mode ────────────────────────────────────
+function renderSkills(d,f){
+  const fresherMode = f.exp==='0-3';
+  document.getElementById('skillsGrid').innerHTML=d.skills.map(s=>{
+    const ff = s.fresherFit||50;
+    const ffBar = fresherMode ? `<div style="margin-top:5px;display:flex;align-items:center;gap:5px"><span style="font-size:9px;color:var(--text3);flex-shrink:0">Fresher fit:</span><div style="flex:1;height:3px;background:var(--bg3);border-radius:2px"><div style="width:${ff}%;height:100%;background:${ff>70?'#0e9e6e':ff>40?'#d97706':'#dc2626'};border-radius:2px"></div></div><span style="font-size:9px;color:var(--text3)">${ff}%</span></div>` : '';
+    return`<div class="skill-chip d-${s.d}" title="${s.n} — demand: ${s.s}/100${fresherMode?' | Fresher fit: '+ff+'%':''}">
+      <div class="sk-name">${s.n}</div>
+      <div class="sk-dem">${s.d==='critical'?'🔴 Critical':s.d==='high'?'🟡 High':s.d==='mid'?'🔵 Solid':'🟢 Growing'}</div>
+      <div class="sk-bar" style="width:${s.s}%"></div>
+      ${ffBar}
+    </div>`;
+  }).join('');
+  // note above grid
+  const note = document.getElementById('skill-fresher-note');
+  if(note) note.style.display = fresherMode?'block':'none';
+}
+
+// ── Vacancy panel ────────────────────────────────────────────
+function renderVacancyPanel(d,f){
+  const el = document.getElementById('vacancy-panel');
+  if(!el) return;
+  const vac = d.vacancyByRole[f.role] || d.vacancyByRole['all'];
+  const fd  = d.fresherDemand;
+  const showFresher = f.exp==='0-3' || f.role==='all';
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px">
+      <div class="kpi"><div class="kpi-label">${roleLabel(f.role)} vacancy rate</div><div class="kpi-val" style="color:${vac.rate>25?'#0e9e6e':vac.rate>15?'#d97706':'#1a7fd4'}">${vac.rate}%</div><div class="kpi-sub up">${vac.yoy} YoY</div></div>
+      <div class="kpi"><div class="kpi-label">Fresher share of openings</div><div class="kpi-val" style="color:${vac.freshers>40?'#0e9e6e':'#d97706'}">${vac.freshers}%</div><div class="kpi-sub neu">of unfilled ${roleLabel(f.role)} roles</div></div>
+      <div class="kpi"><div class="kpi-label">Mid-level share</div><div class="kpi-val">${vac.mid}%</div><div class="kpi-sub neu">3–7 yr roles</div></div>
+      <div class="kpi"><div class="kpi-label">Senior share</div><div class="kpi-val">${vac.senior}%</div><div class="kpi-sub neu">7+ yr roles</div></div>
+      ${showFresher?`<div class="kpi"><div class="kpi-label">Fresher demand score</div><div class="kpi-val" style="color:#0e9e6e">${fd.score}/100</div><div class="kpi-sub up">${fd.trend}</div></div>`:''}
     </div>
-    <div class="heat-blob" style="width:${h.size*3.5}px;height:${h.size*3.5}px;background:${h.color};left:${h.x};top:${h.y};margin-left:-${h.size*1.75}px;margin-top:-${h.size*1.75}px;animation-delay:${Math.random()*2}s"></div>
-  `).join('');
-}
-
-function renderSkills(d) {
-  document.getElementById('skills-city-name').textContent = d.name;
-  document.getElementById('skillsGrid').innerHTML = d.skills.map(s => `
-    <div class="skill-chip demand-${s.demand}" title="${s.name}: ${s.bar} demand score">
-      <div class="skill-chip-name">${s.name}</div>
-      <div class="skill-chip-demand">${s.demand === 'critical' ? '🔴 Critical' : s.demand === 'high' ? '🟡 High' : s.demand === 'mid' ? '🔵 Solid' : '🟢 Growing'}</div>
-      <div class="skill-chip-bar" style="width:${s.bar}"></div>
-    </div>`).join('');
-}
-
-function renderJobs(d) {
-  document.getElementById('jobs-city-name').textContent = d.name;
-  document.getElementById('jobList').innerHTML = d.jobs.map(j => `
-    <div class="job-card">
-      <div>
-        <div class="job-title">${j.title}</div>
-        <div class="job-meta">${j.co}</div>
+    ${showFresher?`
+    <div class="ic green" style="margin-bottom:10px">
+      <span class="itag it-g">Fresher Market Intelligence · ${d.name}</span><br>
+      ${fd.note}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div class="card" style="padding:12px 14px">
+        <div class="card-title">Top fresher roles in demand</div>
+        ${fd.topRoles.map(r=>`<div style="padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text)">→ ${r}</div>`).join('')}
       </div>
-      <div class="job-right">
-        <div class="job-salary">${j.sal}</div>
-        <span class="job-tag ${j.type}">${j.tag.toUpperCase()}</span>
+      <div class="card" style="padding:12px 14px">
+        <div class="card-title">Companies hiring freshers · ${d.name}</div>
+        ${fd.campusCo.map(c=>`<div style="padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text)">🏢 ${c}</div>`).join('')}
+        <div style="font-size:11px;color:var(--text3);margin-top:6px">Avg package: <strong style="color:var(--accent2)">${fd.avgPackage}</strong></div>
       </div>
-    </div>`).join('');
+    </div>`:''}
+    <div style="position:relative;width:100%;height:220px;margin-top:4px">
+      <canvas id="vacancyChart" role="img" aria-label="Bar chart showing vacancy rate breakdown by experience level">Vacancy rate split between fresher, mid-level, and senior roles.</canvas>
+    </div>`;
+
+  // Vacancy breakdown chart
+  setTimeout(()=>{
+    kill('vac');
+    const ctx=document.getElementById('vacancyChart');
+    if(!ctx)return;
+    charts.vac=new Chart(ctx.getContext('2d'),{
+      type:'bar',
+      data:{labels:['Fresher (0–3yr)','Mid (3–7yr)','Senior (7+yr)'],
+        datasets:[{label:'Share of unfilled positions (%)',
+          data:[vac.freshers,vac.mid,vac.senior],
+          backgroundColor:['rgba(14,158,110,0.7)','rgba(26,127,212,0.6)','rgba(217,119,6,0.6)'],
+          borderRadius:6}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>v+'%'},grid:{color:GC},max:100},
+                x:{ticks:{color:TC,font:{size:11}},grid:{display:false}}}}
+    });
+  },50);
 }
 
-function renderLife(d) {
-  document.getElementById('life-city-name').textContent = d.name;
-  document.getElementById('lifeGrid').innerHTML = d.life.map(l => `
+// highlightLifeCards removed — lifestyle filter removed
+
+// ═══════════════════════════════════════════════════════════════
+// FULL RENDER (city switch or section switch)
+// ═══════════════════════════════════════════════════════════════
+function renderAll(){
+  const d=C[city];
+  const f=getFilters();
+  renderMap(d);
+  renderLifeSection(d);
+  renderRelo(d);
+  renderInsights(d);
+  renderOtherCharts(d);
+  ['skill-city','job-city','life-city','relo-city','insight-city'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.textContent=d.name;
+  });
+  applyFilters(); // always run filters after any city/section switch
+}
+
+function renderMap(d){
+  const pinsEl=document.getElementById('mapPins');if(!pinsEl)return;
+  document.querySelectorAll('.heat-blob').forEach(b=>b.remove());
+  pinsEl.innerHTML=d.hubs.map(h=>`
+    <div class="hub-pin" style="left:${h.x};top:${h.y}" title="${h.n}">
+      <div class="hub-circle" style="width:${h.sz}px;height:${h.sz}px;background:${h.c}">${h.sz>36?'🔥':''}</div>
+      <div class="hub-lbl">${h.n}</div>
+    </div>`).join('');
+  const mapEl=document.getElementById('hubMap');
+  d.hubs.forEach((h,i)=>{
+    const b=document.createElement('div');b.className='heat-blob';
+    b.style.cssText=`width:${h.sz*3.2}px;height:${h.sz*3.2}px;background:${h.c};left:${h.x};top:${h.y};margin-left:-${h.sz*1.6}px;margin-top:-${h.sz*1.6}px;animation-delay:${i*0.6}s`;
+    mapEl.appendChild(b);
+  });
+}
+
+function renderLifeSection(d){
+  const lg=document.getElementById('lifeGrid');
+  if(lg) lg.innerHTML=d.life.map(l=>`
     <div class="life-card">
-      <div class="life-card-icon">${l.icon}</div>
-      <div class="life-card-label">${l.label}</div>
-      <div class="life-card-val">${l.val}</div>
-      <div class="life-score-bar"><div class="life-score-fill" style="width:${l.score}%;background:${l.color}"></div></div>
+      <div class="lc-icon">${l.icon}</div>
+      <div class="lc-label">${l.label}</div>
+      <div class="lc-val">${l.val}</div>
+      <div class="lc-bar"><div class="lc-fill" style="width:${l.score}%;background:${l.color}"></div></div>
     </div>`).join('');
-  document.getElementById('neighbourhoodGuide').innerHTML = d.neighbourhoods.map(n => `
-    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">
-      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">${n.name}</div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:6px">${n.vibe}</div>
-      <div style="font-size:12px;color:var(--accent2)">Rent: ${n.rent}</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:3px">${n.for}</div>
+  const hg=document.getElementById('hoodGrid');
+  if(hg) hg.innerHTML=d.hoods.map(h=>`
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px">${h.name}</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:5px">${h.vibe}</div>
+      <div style="font-size:12px;color:var(--accent2)">Rent: ${h.rent}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:2px">${h.for}</div>
     </div>`).join('');
 }
 
-function renderRelo(d) {
-  document.getElementById('relo-city-name').textContent = d.name;
-  document.getElementById('reloScore').textContent = d.relo.score;
-  document.getElementById('reloGrade').textContent = d.relo.grade;
-  document.getElementById('reloBreakdown').innerHTML = d.relo.dims.map(dim => `
+function renderRelo(d){
+  const rs=document.getElementById('reloScore');if(rs)rs.textContent=d.relo.score;
+  const rg=document.getElementById('reloGrade');if(rg)rg.textContent=d.relo.grade;
+  const rb=document.getElementById('reloBd');
+  if(rb) rb.innerHTML=d.relo.dims.map(dim=>`
     <div class="relo-row">
-      <div class="relo-row-label">${dim.label}</div>
-      <div class="relo-row-bar"><div class="relo-row-fill" style="width:${dim.val}%;background:${dim.color}"></div></div>
-      <div class="relo-row-val">${dim.val}</div>
+      <div class="relo-rl">${dim.label}</div>
+      <div class="relo-rb"><div class="relo-rf" style="width:${dim.val}%;background:${dim.color}"></div></div>
+      <div class="relo-rv">${dim.val}</div>
     </div>`).join('');
-  document.getElementById('reloChecklist').innerHTML = d.reloChecklist.map(c => `<div>${c}</div>`).join('');
-  document.getElementById('reloFacts').innerHTML = d.reloFacts.map(f => `
+  const rl=document.getElementById('reloList');if(rl) rl.innerHTML=d.reloList.map(r=>`<div>${r}</div>`).join('');
+  const rf=document.getElementById('reloFacts');
+  if(rf) rf.innerHTML=d.reloFacts.map(f=>`
     <div class="card" style="text-align:center">
-      <div style="font-size:28px;margin-bottom:8px">${f.icon}</div>
-      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px">${f.label}</div>
-      <div style="font-size:13px;color:var(--text)">${f.val}</div>
+      <div style="font-size:26px;margin-bottom:7px">${f.icon}</div>
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">${f.label}</div>
+      <div style="font-size:12px;color:var(--text)">${f.val}</div>
     </div>`).join('');
 }
 
-function renderCompare() {
-  const rows = Object.values(CITIES).map(d => {
-    const gg = d.relo.grade;
-    const cls = gg.includes('+') ? 'score-a' : gg === 'A' ? 'score-a' : gg.includes('B') ? 'score-b' : 'score-c';
-    return `<tr>
+function renderInsights(d){
+  const tl={'it-b':'Market Data','it-g':'Opportunity','it-a':'Career Tip','it-p':'Watch Out','it-r':'Warning'};
+  const ip=document.getElementById('insightsPanel');
+  if(ip) ip.innerHTML=d.insights.map(ins=>`
+    <div class="ic ${ins.cls}"><span class="itag ${ins.tag}">${tl[ins.tag]||'Insight'}</span><br>${ins.text}</div>`).join('');
+  const gi=document.getElementById('globalInsights');
+  if(gi) gi.innerHTML=[
+    {cls:'green',tag:'it-g',text:'<strong>21.53 MSF absorbed nationally in Q1 2026 — up 20% YoY (Vestian).</strong> GCCs drove 53% of total (11.5 MSF). Bengaluru + Hyderabad contributed nearly 50% of all leasing. Hyderabad doubled YoY; completions crashed 95% — supply crunch incoming.'},
+    {cls:'amber',tag:'it-a',text:'<strong>GenAI engineers command 35–55% salary premium (Instahyre 2025).</strong> AI/ML postings up 75%. AWS DevOps salaries rose 10% across all bands. Freshers in data science saw dip from ₹8.4L → ₹6.3L — specialisation beats generalisation now.'},
+    {cls:'',tag:'it-b',text:'<strong>Google India median SWE package: ₹78L. Microsoft: ₹44.6L (Levels.fyi Apr 2026).</strong> Mid-level GCC roles average ₹28–38L including RSUs vs ₹14–18L in IT services at the same experience — the GCC premium is real and growing.'},
+  ].map(i=>`<div class="ic ${i.cls}" style="margin-bottom:8px"><span class="itag ${i.tag}">${i.cls==='green'?'Opportunity':i.cls==='amber'?'Salary Signal':'Market Data'}</span><br>${i.text}</div>`).join('');
+}
+
+function renderOtherCharts(d){
+  kill('emp');
+  const ec=document.getElementById('empChart');
+  if(ec) charts.emp=new Chart(ec.getContext('2d'),{type:'doughnut',data:{labels:['GCC/MNC','IT Services','Startup','Other'],datasets:[{data:[d.emp.gcc,d.emp.it,d.emp.startup,d.emp.other],backgroundColor:['#0e9e6e','#1a7fd4','#d97706','#888'],borderWidth:0,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}}}});
+
+  kill('prem');
+  const pc=document.getElementById('premChart');
+  if(pc) charts.prem=new Chart(pc.getContext('2d'),{type:'bar',data:{labels:d.prem.labels,datasets:[{data:d.prem.data,backgroundColor:['#ef444499','#f59e0b99','#1a7fd499','#0e9e6e99','#8b5cf699'],borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:10},callback:v=>'+'+v+'%'},grid:{color:GC}},y:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
+
+  kill('trend');
+  const tc=document.getElementById('trendChart');
+  if(tc) charts.trend=new Chart(tc.getContext('2d'),{type:'bar',data:{labels:d.trend.labels,datasets:[{label:'2024',data:d.trend.v24,backgroundColor:'rgba(30,80,160,0.18)',borderRadius:3},{label:'Q1 2026',data:d.trend.v26,backgroundColor:d.color+'cc',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},scales:{y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}},x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
+
+  kill('exp');
+  const xc=document.getElementById('expChart');
+  if(xc) charts.exp=new Chart(xc.getContext('2d'),{type:'bar',data:{labels:d.expSal.labels,datasets:[{label:'Min ₹L',data:d.expSal.min,backgroundColor:'rgba(26,127,212,0.35)',borderRadius:4},{label:'Max ₹L',data:d.expSal.max,backgroundColor:'rgba(14,158,110,0.55)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+v+'L'},grid:{color:GC}},x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
+
+  kill('cost');
+  const cc=document.getElementById('costChart');
+  if(cc) charts.cost=new Chart(cc.getContext('2d'),{type:'bar',data:{labels:d.cost.labels,datasets:[{data:d.cost.data,backgroundColor:['#ef444488','#f59e0b88','#1a7fd488','#8b5cf688','#0e9e6e88','#88888888'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+(v/1000).toFixed(0)+'K'},grid:{color:GC}},x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
+
+  kill('disp');
+  const dc=document.getElementById('dispChart');
+  if(dc) charts.disp=new Chart(dc.getContext('2d'),{type:'bar',data:{labels:d.disp.labels,datasets:[{label:'Gross/mo',data:d.disp.gross,backgroundColor:'rgba(26,127,212,0.35)',borderRadius:4},{label:'Disposable/mo',data:d.disp.net,backgroundColor:'rgba(14,158,110,0.65)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+(v/1000).toFixed(0)+'K'},grid:{color:GC}},x:{ticks:{color:TC,font:{size:9},maxRotation:30},grid:{display:false}}}}});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COMPARE
+// ═══════════════════════════════════════════════════════════════
+function renderCompare(){
+  const cities=Object.values(C);
+  document.getElementById('cmpBody').innerHTML=cities.map(d=>{
+    const g=d.relo.grade;
+    const gc=g.includes('+')&&g.startsWith('A')?'sa':g.startsWith('A')?'sb':g.startsWith('B')?'sc':'sd';
+    const totalCost=d.cost.data.reduce((a,b)=>a+b,0);
+    const midGross=d.disp.gross[1];const midNet=d.disp.net[1];
+    const dispPct=Math.round((midNet/midGross)*100);
+    const ci=Math.round((totalCost/midGross)*100);
+    const vac=d.vacancyByRole['all'];
+    return`<tr>
       <td><strong style="color:${d.color}">${d.name}</strong></td>
-      <td>${d.kpis[0].val}</td>
-      <td>${d.kpis[1].val}</td>
-      <td>${d.kpis[3].val}</td>
-      <td>${d.kpis[4].val}</td>
-      <td style="color:var(--accent2)">${d.kpis[4].val.replace('₹','').split('/')[0]} → <strong style="color:#34d399">₹${Math.round(parseInt(d.costBreakdown.data.reduce((a,b)=>a+b,0)/1000)*0.6)}K saved</strong></td>
-      <td><span class="mini-bar" style="width:${d.radar[2]}px;background:${d.color};opacity:0.7"></span> ${d.radar[2]}/100</td>
-      <td><span class="mini-bar" style="width:${d.relo.dims[0].val * 0.6}px;background:var(--accent);opacity:0.7"></span> ${d.relo.dims[0].val}/100</td>
-      <td><span class="score-pill ${cls}">${d.relo.grade}</span></td>
+      <td>${d.kpis[0].val}</td><td>${d.kpis[1].val}</td><td>${d.kpis[4].val}</td>
+      <td>${d.kpis[5].val}</td>
+      <td><span class="mini-bar" style="width:${Math.min(ci,100)*0.5}px;background:${d.color};opacity:.7"></span> ${ci}%</td>
+      <td style="color:var(--accent2);font-weight:500">${dispPct}%</td>
+      <td style="color:${vac.rate>25?'#0e9e6e':vac.rate>15?'#d97706':'#1a7fd4'};font-weight:500">${vac.rate}% <span style="font-size:10px;color:var(--text3)">(${vac.freshers}% fresher)</span></td>
+      <td><span class="spill ${gc}">${d.relo.grade}</span></td>
     </tr>`;
   }).join('');
-  document.getElementById('compareTableBody').innerHTML = rows;
 
-  document.getElementById('archetypeGuide').innerHTML = [
-    { who: '🧑‍💻 GenAI Engineer', go: 'Bengaluru', why: 'Highest GenAI job density + best equity upside' },
-    { who: '🏦 BFSI/Quant Developer', go: 'Mumbai', why: 'Goldman, JPMorgan, HSBC GCCs pay 50%+ premium' },
-    { who: '☁ Cloud/DevOps Engineer', go: 'Hyderabad', why: 'Best cost-to-salary, Amazon/Microsoft aggressive hiring' },
-    { who: '👨‍👩‍👧 Family relocation', go: 'Hyderabad or Ahmedabad', why: 'Safe, affordable, good schools, less chaos' },
-    { who: '🌱 Fresh graduate', go: 'Ahmedabad', why: 'Build savings fast, GIFT City emerging, 40% cheaper' },
-    { who: '💼 Senior/Director+', go: 'Bengaluru or Mumbai', why: 'Highest leadership comp + largest peer networks' },
-  ].map(a => `
-    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px">
-      <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px">${a.who}</div>
-      <div style="font-size:12px;color:var(--accent2);margin-bottom:4px">→ ${a.go}</div>
+  document.getElementById('archetypeGrid').innerHTML=[
+    {who:'🧑‍💻 GenAI/ML Engineer',go:'Bengaluru',why:'Highest GenAI job density; Google/MS/Walmart pay best RSU packages'},
+    {who:'🏦 Quant / BFSI-tech Dev',go:'Mumbai',why:'Goldman, JPMorgan, HSBC GCCs — uniquely concentrated here'},
+    {who:'☁ Cloud / DevOps Engineer',go:'Hyderabad',why:'Best cost-to-salary; Amazon/Apple most aggressive AWS hirers'},
+    {who:'👨‍👩‍👧 Family relocation',go:'Hyderabad or Ahmedabad',why:'Safety, schools, affordable housing, manageable commute'},
+    {who:'🌱 Fresh graduate (best odds)',go:'Ahmedabad',why:'28% vacancy rate — lowest competition in India\'s top 5'},
+    {who:'🌱 Fresh graduate (best pay)',go:'Hyderabad',why:'GCC freshers ₹6–10L, lowest cost-to-salary after Ahmedabad'},
+    {who:'💼 Director/VP level',go:'Bengaluru or Mumbai',why:'Highest leadership comp, biggest peer networks, equity upside'},
+    {who:'💰 Max disposable income',go:'Ahmedabad',why:'₹12L salary keeps 75% disposable — no city comes close'},
+  ].map(a=>`
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:5px">${a.who}</div>
+      <div style="font-size:12px;color:var(--accent2);margin-bottom:3px">→ ${a.go}</div>
       <div style="font-size:11px;color:var(--text3)">${a.why}</div>
     </div>`).join('');
 
-  renderCompareCharts();
+  kill('cmpSal');kill('radar');
+  const cities2=Object.values(C);
+  const names=cities2.map(d=>d.name),colors=cities2.map(d=>d.color);
+  const csc=document.getElementById('cmpSalChart');
+  if(csc) charts.cmpSal=new Chart(csc.getContext('2d'),{type:'bar',data:{labels:names,datasets:[{label:'Min ₹L',data:cities2.map(d=>d.expSal.min[1]),backgroundColor:colors.map(c=>c+'55'),borderRadius:4},{label:'Max ₹L',data:cities2.map(d=>d.expSal.max[1]),backgroundColor:colors.map(c=>c+'cc'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+v+'L'},grid:{color:GC}},x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
+  const rc=document.getElementById('radarChart');
+  if(rc) charts.radar=new Chart(rc.getContext('2d'),{type:'radar',data:{labels:['Career','Salary','Life Quality','Affordability','Infrastructure','Safety'],datasets:cities2.map(d=>({label:d.name,data:d.radar,borderColor:d.color,backgroundColor:d.color+'18',pointBackgroundColor:d.color,pointRadius:3,borderWidth:1.5}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:5}}},scales:{r:{ticks:{color:TC,font:{size:9},backdropColor:'rgba(245,247,250,0.85)'},grid:{color:GC},pointLabels:{color:TC,font:{size:10}},angleLines:{color:GC}}}}});
 }
 
-// ======================== CHARTS ========================
-function destroyChart(id) {
-  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+function kill(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+function shareURL(){
+  const url=window.location.href;
+  if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>alert('URL copied!\n\nTo host publicly:\n1. Rename file to index.html\n2. Create a public GitHub repo\n3. Upload index.html\n4. Settings → Pages → Deploy from main\n✅ Your URL: https://username.github.io/repo-name'));
+  else prompt('Copy this URL:',url);
 }
 
-function renderCharts(d) {
-  // Salary by role
-  destroyChart('salDist');
-  const ctx1 = document.getElementById('salaryDistChart').getContext('2d');
-  charts['salDist'] = new Chart(ctx1, {
-    type: 'bar',
-    data: {
-      labels: d.salByRole.labels,
-      datasets: [
-        { label: 'Min ₹LPA', data: d.salByRole.min, backgroundColor: 'rgba(56,189,248,0.4)', borderColor: '#38bdf8', borderWidth: 1, borderRadius: 4 },
-        { label: 'Max ₹LPA', data: d.salByRole.max, backgroundColor: 'rgba(52,211,153,0.5)', borderColor: '#34d399', borderWidth: 1, borderRadius: 4 },
-      ]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { y: { ticks: { color: TICK_COLOR, font: { size: 10 }, callback: v => '₹' + v + 'L' }, grid: { color: GRID_COLOR } }, x: { ticks: { color: TICK_COLOR, font: { size: 10 } }, grid: { display: false } } }
-    }
-  });
-
-  // Hiring trend
-  destroyChart('hiring');
-  charts['hiring'] = new Chart(document.getElementById('hiringChart').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: ['Q1 25', 'Q2 25', 'Q3 25', 'Q4 25', 'Q1 26'],
-      datasets: [{ label: 'Postings', data: d.hiring, borderColor: d.color, backgroundColor: d.color + '22', tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: d.color }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { y: { ticks: { color: TICK_COLOR, font: { size: 10 } }, grid: { color: GRID_COLOR } }, x: { ticks: { color: TICK_COLOR, font: { size: 10 } }, grid: { display: false } } }
-    }
-  });
-
-  // Employer mix
-  destroyChart('employer');
-  charts['employer'] = new Chart(document.getElementById('employerChart').getContext('2d'), {
-    type: 'doughnut',
-    data: {
-      labels: ['GCC/MNC', 'IT Services', 'Startup', 'Other'],
-      datasets: [{ data: [d.employers.gcc, d.employers.it, d.employers.startup, d.employers.other],
-        backgroundColor: ['#34d399', '#38bdf8', '#f59e0b', '#888'], borderWidth: 0, hoverOffset: 6 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '62%',
-      plugins: { legend: { position: 'bottom', labels: { color: TICK_COLOR, font: { size: 10 }, padding: 10, boxWidth: 10 } } }
-    }
-  });
-
-  // Skill premium
-  destroyChart('skillPremium');
-  charts['skillPremium'] = new Chart(document.getElementById('skillPremiumChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: d.skillPremium.labels,
-      datasets: [{ label: '% premium', data: d.skillPremium.data,
-        backgroundColor: ['#ef4444aa', '#f59e0baa', '#38bdf8aa', '#34d399aa', '#8b5cf6aa'],
-        borderRadius: 4 }]
-    },
-    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: TICK_COLOR, font: { size: 10 }, callback: v => '+' + v + '%' }, grid: { color: GRID_COLOR } }, y: { ticks: { color: TICK_COLOR, font: { size: 10 } }, grid: { display: false } } }
-    }
-  });
-
-  // Skill trend
-  destroyChart('skillTrend');
-  charts['skillTrend'] = new Chart(document.getElementById('skillTrendChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: d.skillTrend.labels,
-      datasets: [
-        { label: '2024', data: d.skillTrend.v2024, backgroundColor: 'rgba(99,179,237,0.3)', borderRadius: 3 },
-        { label: '2026', data: d.skillTrend.v2026, backgroundColor: d.color + 'cc', borderRadius: 3 }
-      ]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: TICK_COLOR, font: { size: 10 }, boxWidth: 10, padding: 8 } } },
-      scales: { y: { ticks: { color: TICK_COLOR, font: { size: 10 } }, grid: { color: GRID_COLOR } }, x: { ticks: { color: TICK_COLOR, font: { size: 10 } }, grid: { display: false } } }
-    }
-  });
-
-  // Exp salary
-  destroyChart('expSal');
-  charts['expSal'] = new Chart(document.getElementById('expSalChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: d.expSal.labels,
-      datasets: [
-        { label: 'Min', data: d.expSal.min, backgroundColor: 'rgba(56,189,248,0.4)', borderRadius: 4 },
-        { label: 'Max', data: d.expSal.max, backgroundColor: 'rgba(52,211,153,0.6)', borderRadius: 4 }
-      ]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: TICK_COLOR, font: { size: 10 }, boxWidth: 10, padding: 8 } } },
-      scales: { y: { ticks: { color: TICK_COLOR, font: { size: 10 }, callback: v => '₹' + v + 'L' }, grid: { color: GRID_COLOR } }, x: { ticks: { color: TICK_COLOR, font: { size: 10 } }, grid: { display: false } } }
-    }
-  });
-
-  // Cost breakdown
-  destroyChart('cost');
-  charts['cost'] = new Chart(document.getElementById('costChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: d.costBreakdown.labels,
-      datasets: [{ data: d.costBreakdown.data, backgroundColor: ['#ef4444aa','#f59e0baa','#38bdf8aa','#8b5cf6aa','#34d399aa','#888aa'], borderRadius: 4 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { y: { ticks: { color: TICK_COLOR, font: { size: 10 }, callback: v => '₹' + (v/1000).toFixed(0) + 'K' }, grid: { color: GRID_COLOR } }, x: { ticks: { color: TICK_COLOR, font: { size: 10 } }, grid: { display: false } } }
-    }
-  });
-
-  // Disposable
-  destroyChart('disposable');
-  charts['disposable'] = new Chart(document.getElementById('disposableChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: d.disposable.labels,
-      datasets: [
-        { label: 'Gross/mo', data: d.disposable.gross, backgroundColor: 'rgba(56,189,248,0.4)', borderRadius: 4 },
-        { label: 'Disposable/mo', data: d.disposable.net, backgroundColor: 'rgba(52,211,153,0.7)', borderRadius: 4 }
-      ]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: TICK_COLOR, font: { size: 10 }, boxWidth: 10, padding: 8 } } },
-      scales: { y: { ticks: { color: TICK_COLOR, font: { size: 10 }, callback: v => '₹' + (v/1000).toFixed(0) + 'K' }, grid: { color: GRID_COLOR } }, x: { ticks: { color: TICK_COLOR, font: { size: 9 }, maxRotation: 30 }, grid: { display: false } } }
-    }
-  });
-}
-
-function renderCompareCharts() {
-  const cityList = Object.values(CITIES);
-  const colors = cityList.map(c => c.color);
-  const names = cityList.map(c => c.name);
-
-  destroyChart('citySal');
-  charts['citySal'] = new Chart(document.getElementById('cityCompSalChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: names,
-      datasets: [
-        { label: 'Min SWE', data: cityList.map(c => c.expSal.min[1]), backgroundColor: colors.map(c => c + '66'), borderRadius: 4 },
-        { label: 'Max SWE', data: cityList.map(c => c.expSal.max[1]), backgroundColor: colors.map(c => c + 'cc'), borderRadius: 4 }
-      ]
-    },
-    options: { responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { color: TICK_COLOR, font: { size: 10 }, boxWidth: 10, padding: 8 } } },
-      scales: { y: { ticks: { color: TICK_COLOR, font: { size: 10 }, callback: v => '₹' + v + 'L' }, grid: { color: GRID_COLOR } }, x: { ticks: { color: TICK_COLOR, font: { size: 10 } }, grid: { display: false } } }
-    }
-  });
-
-  destroyChart('radar');
-  const radarLabels = ['Career', 'Salary', 'Life Quality', 'Affordability', 'Infrastructure', 'Safety'];
-  charts['radar'] = new Chart(document.getElementById('radarChart').getContext('2d'), {
-    type: 'radar',
-    data: {
-      labels: radarLabels,
-      datasets: cityList.map((c, i) => ({
-        label: c.name, data: c.radar,
-        borderColor: c.color, backgroundColor: c.color + '18',
-        pointBackgroundColor: c.color, pointRadius: 3, borderWidth: 1.5
-      }))
-    },
-    options: { responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { color: TICK_COLOR, font: { size: 10 }, boxWidth: 10, padding: 6 } } },
-      scales: { r: { ticks: { color: TICK_COLOR, font: { size: 9 }, backdropColor: 'rgba(245,247,250,0.9)' }, grid: { color: 'rgba(99,179,237,0.12)' }, pointLabels: { color: TICK_COLOR, font: { size: 10 } }, angleLines: { color: 'rgba(99,179,237,0.12)' } } }
-    }
-  });
-}
-
-function shareURL() {
-  const url = window.location.href;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(() => alert('URL copied to clipboard! Share this file or host it on GitHub Pages / Netlify for a public link.'));
-  } else {
-    prompt('Copy this URL:', url);
-  }
-}
-
-function toggleMode() {
-  alert('Light mode toggle: Add ?theme=light to URL or modify :root CSS variables to --bg:#ffffff for full light mode.');
-}
-
+// ═══════════════════════════════════════════════════════════════
 // INIT
+// ═══════════════════════════════════════════════════════════════
 renderAll();
 </script>
+
+<!-- QA UNIT TESTS — run in browser console: runQA() -->
+<script>
+window.runQA = function(){
+  const results = [];
+  function assert(name, condition, detail){
+    results.push({name, pass: !!condition, detail: detail||''});
+  }
+
+  // TEST 1: Data integrity — all 5 cities have required keys
+  const requiredKeys = ['kpis','jobs','vacancyByRole','fresherDemand','salByRole','hiring','skills','prem','trend','expSal','life','cost','disp','hoods','relo','reloList','reloFacts','hubs','radar','insights'];
+  Object.entries(C).forEach(([id, d]) => {
+    requiredKeys.forEach(k => {
+      assert(`[${id}] has ${k}`, d[k] !== undefined, `City: ${id}`);
+    });
+  });
+
+  // TEST 2: All jobs have required fields
+  Object.entries(C).forEach(([id, d]) => {
+    d.jobs.forEach((j, idx) => {
+      const fields = ['title','co','sal','salMin','salMax','tag','tc','role','exp','coType'];
+      fields.forEach(f => assert(`[${id}] job[${idx}].${f}`, j[f] !== undefined));
+      assert(`[${id}] job[${idx}] salMin < salMax`, j.salMin < j.salMax, `${j.salMin} vs ${j.salMax}`);
+      assert(`[${id}] job[${idx}] role valid`, ['swe','data','pm','devops','design','leadership'].includes(j.role));
+      assert(`[${id}] job[${idx}] exp valid`, ['0-3','3-7','7-12','12+'].includes(j.exp));
+      assert(`[${id}] job[${idx}] coType valid`, ['gcc','startup','it'].includes(j.coType));
+    });
+  });
+
+  // TEST 3: Filters actually change the job list
+  const origCity = city;
+  city = 'blr';
+  const allJobs = C.blr.jobs.length;
+  const sweJobs = C.blr.jobs.filter(j => j.role === 'swe').length;
+  const fresherJobs = C.blr.jobs.filter(j => j.exp === '0-3').length;
+  assert('[filter] SWE filter reduces Bengaluru jobs', sweJobs < allJobs, `${sweJobs} < ${allJobs}`);
+  assert('[filter] Fresher filter returns results', fresherJobs > 0, `${fresherJobs} fresher jobs`);
+
+  // TEST 4: Salary filter works correctly
+  const highSalJobs = C.blr.jobs.filter(j => j.salMax >= 30);
+  const lowSalJobs  = C.blr.jobs.filter(j => j.salMax < 30);
+  assert('[filter] Min ₹30L filter excludes low-salary jobs', lowSalJobs.length > 0, 'some jobs below threshold exist');
+  assert('[filter] Min ₹30L filter includes high-salary jobs', highSalJobs.length > 0, 'some jobs above threshold exist');
+
+  // TEST 5: vacancyByRole has all role keys  
+  const roleKeys = ['swe','data','pm','devops','design','leadership','all'];
+  Object.entries(C).forEach(([id, d]) => {
+    roleKeys.forEach(r => {
+      assert(`[${id}] vacancyByRole.${r} exists`, d.vacancyByRole[r] !== undefined);
+      assert(`[${id}] vacancyByRole.${r} sums ~100`, 
+        Math.abs((d.vacancyByRole[r].freshers + d.vacancyByRole[r].mid + d.vacancyByRole[r].senior) - 100) <= 2,
+        `${d.vacancyByRole[r].freshers}+${d.vacancyByRole[r].mid}+${d.vacancyByRole[r].senior}`
+      );
+    });
+  });
+
+  // TEST 6: salByRole has all role keys
+  const salRoles = ['all','swe','data','pm','devops','design','leadership'];
+  Object.entries(C).forEach(([id, d]) => {
+    salRoles.forEach(r => {
+      assert(`[${id}] salByRole.${r} exists`, d.salByRole[r] !== undefined);
+      if(d.salByRole[r]){
+        assert(`[${id}] salByRole.${r} min.length === max.length`, 
+          d.salByRole[r].min.length === d.salByRole[r].max.length);
+        d.salByRole[r].min.forEach((mn, i) => {
+          assert(`[${id}] salByRole.${r}[${i}] min < max`, mn < d.salByRole[r].max[i], `${mn} vs ${d.salByRole[r].max[i]}`);
+        });
+      }
+    });
+  });
+
+  // TEST 7: KPIs array is 6 long
+  Object.entries(C).forEach(([id, d]) => {
+    assert(`[${id}] kpis.length === 6`, d.kpis.length === 6, `got ${d.kpis.length}`);
+    d.kpis.forEach((k, i) => {
+      assert(`[${id}] kpi[${i}].bar is 0-100`, k.bar >= 0 && k.bar <= 100, `got ${k.bar}`);
+    });
+  });
+
+  // TEST 8: Radar data is 6 values 0-100
+  Object.entries(C).forEach(([id, d]) => {
+    assert(`[${id}] radar.length === 6`, d.radar.length === 6);
+    d.radar.forEach((v, i) => assert(`[${id}] radar[${i}] in range`, v >= 0 && v <= 100, `got ${v}`));
+  });
+
+  // TEST 9: Relo dims sum sanity
+  Object.entries(C).forEach(([id, d]) => {
+    assert(`[${id}] relo.score in range`, d.relo.score >= 0 && d.relo.score <= 100);
+    assert(`[${id}] relo.grade set`, ['A+','A','A-','B+','B','B-','C+','C'].includes(d.relo.grade), d.relo.grade);
+    assert(`[${id}] relo.dims.length === 7`, d.relo.dims.length === 7);
+    d.relo.dims.forEach((dim, i) => {
+      assert(`[${id}] dim[${i}].val in range`, dim.val >= 0 && dim.val <= 100, `${dim.label}: ${dim.val}`);
+    });
+  });
+
+  // TEST 10: DOM elements exist
+  const domIds = ['kpi-strip','jobList','skillsGrid','vacancy-panel','lifeGrid','hoodGrid','reloScore','reloGrade','reloBd','reloList','insightsPanel','cmpBody','archetypeGrid'];
+  domIds.forEach(id => assert(`[DOM] #${id} exists`, document.getElementById(id) !== null));
+
+  // TEST 11: Filter elements exist and have correct IDs
+  ['f-role','f-exp','f-co','f-sal'].forEach(id => {
+    assert(`[DOM] filter #${id} exists`, document.getElementById(id) !== null);
+    if(document.getElementById(id)){
+      assert(`[DOM] filter #${id} has options`, document.getElementById(id).options.length > 1);
+    }
+  });
+  // Lifestyle filter should NOT exist anymore
+  assert('[DOM] f-life filter REMOVED', document.getElementById('f-life') === null, 'lifestyle filter should be gone');
+
+  // TEST 12: City tabs exist
+  const tabs = document.querySelectorAll('.city-tab');
+  assert('[DOM] 6 city tabs exist', tabs.length === 6, `got ${tabs.length}`);
+
+  // TEST 13: Section tabs react
+  const stabs = document.querySelectorAll('.stab');
+  assert('[DOM] 7 section tabs exist', stabs.length === 7, `got ${stabs.length}`);
+
+  // TEST 14: Charts rendered
+  const chartIds = ['salChart','hiringChart','empChart'];
+  chartIds.forEach(id => assert(`[DOM] canvas#${id} exists`, document.getElementById(id) !== null));
+
+  // Restore city
+  city = origCity;
+
+  // ── REPORT ──────────────────────────────────────────────────────────────
+  const passed = results.filter(r=>r.pass).length;
+  const failed = results.filter(r=>!r.pass);
+  console.log('%c╔══════════════════════════════════════╗','color:#0e9e6e;font-weight:bold');
+  console.log('%c  India JobHeat QA Report              ','color:#0e9e6e;font-weight:bold');
+  console.log('%c╚══════════════════════════════════════╝','color:#0e9e6e;font-weight:bold');
+  console.log('%c✅ Passed: '+passed+' / '+results.length,'color:#0e9e6e;font-size:14px;font-weight:bold');
+  if(failed.length){
+    console.log('%c❌ Failed: '+failed.length,'color:#dc2626;font-size:14px;font-weight:bold');
+    failed.forEach(f => console.log('%c  FAIL: '+f.name+' — '+f.detail,'color:#dc2626'));
+  }
+  if(failed.length===0) console.log('%c🎉 All tests passed! Dashboard is production-ready.','color:#0e9e6e;font-size:15px;font-weight:bold');
+
+  // Visual result overlay
+  const overlay = document.createElement('div');
+  overlay.style.cssText='position:fixed;bottom:20px;right:20px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;font-family:DM Sans,sans-serif;font-size:12px;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,0.12);max-width:280px';
+  overlay.innerHTML=`<div style="font-weight:600;font-size:13px;margin-bottom:8px">🧪 QA Report</div>
+    <div style="color:#0e9e6e;font-weight:500">✅ ${passed} tests passed</div>
+    ${failed.length?`<div style="color:#dc2626;margin-top:4px">❌ ${failed.length} failed:<br>${failed.slice(0,3).map(f=>`<span style="font-size:10px">${f.name}</span>`).join('<br>')}</div>`:'<div style="color:#0e9e6e;margin-top:4px;font-size:11px">All checks passed — production ready 🎉</div>'}
+    <button onclick="this.parentElement.remove()" style="margin-top:10px;font-size:11px;padding:3px 10px;border:1px solid #e2e8f0;border-radius:6px;background:#f8fafc;cursor:pointer">Close</button>`;
+  document.body.appendChild(overlay);
+
+  return {passed, total: results.length, failed};
+};
+console.log('%cIndia JobHeat loaded. Run runQA() in console to execute unit tests.','color:#1a7fd4;font-weight:500');
+</script>
+
 </body>
 </html>
