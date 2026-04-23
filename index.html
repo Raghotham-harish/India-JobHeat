@@ -232,7 +232,7 @@ select:focus{outline:none;border-color:var(--accent)}
 
   <div class="panel active" id="panel-overview">
     <div class="grid2">
-      <div class="card"><div class="card-title">Salary range by role — ₹ LPA (Levels.fyi + AmbitionBox)</div><div class="chart-wrap" style="height:240px"><canvas id="salChart" role="img" aria-label="Salary range by tech role">Salary min and max for SWE, Data/AI, PM, DevOps, Design, Director.</canvas></div></div>
+      <div class="card"><div class="card-title" id="sal-chart-title">Salary range by role — ₹ LPA (Levels.fyi + AmbitionBox)</div><div class="chart-wrap" style="height:240px"><canvas id="salChart" role="img" aria-label="Salary range by tech role">Salary min and max for SWE, Data/AI, PM, DevOps, Design, Director.</canvas></div></div>
       <div class="card"><div class="card-title">Office hotspots — job density map</div>
         <div class="hub-map" id="hubMap"><div class="map-grid-bg"></div><div id="mapPins"></div>
           <div style="position:absolute;bottom:8px;right:8px;background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:8px;padding:7px 9px;font-size:10px">
@@ -243,8 +243,8 @@ select:focus{outline:none;border-color:var(--accent)}
           </div>
         </div>
       </div>
-      <div class="card"><div class="card-title">Hiring trend — job postings index (NASSCOM / Naukri JobSpeak)</div><div class="chart-wrap" style="height:190px"><canvas id="hiringChart" role="img" aria-label="Quarterly hiring trend">Hiring trend Q1 2025 to Q1 2026.</canvas></div></div>
-      <div class="card"><div class="card-title">Employer type mix — Q1 2026 (Vestian / JLL)</div><div class="chart-wrap" style="height:190px"><canvas id="empChart" role="img" aria-label="Employer mix donut chart">GCC, IT services, startup, other breakdown.</canvas></div></div>
+      <div class="card"><div class="card-title" id="hiring-chart-title">Hiring trend — job postings index (NASSCOM / Naukri JobSpeak)</div><div class="chart-wrap" style="height:190px"><canvas id="hiringChart" role="img" aria-label="Quarterly hiring trend">Hiring trend Q1 2025 to Q1 2026.</canvas></div></div>
+      <div class="card"><div class="card-title" id="emp-chart-title">Employer type mix — Q1 2026 (Vestian / JLL)</div><div class="chart-wrap" style="height:190px"><canvas id="empChart" role="img" aria-label="Employer mix donut chart">GCC, IT services, startup, other breakdown.</canvas></div></div>
     </div>
   
 <div style="margin-top:14px" id="vacancy-panel-wrap">
@@ -266,8 +266,8 @@ select:focus{outline:none;border-color:var(--accent)}
       <div id="skill-fresher-note" style="display:none;background:rgba(14,158,110,0.08);border:1px solid rgba(14,158,110,0.20);border-radius:var(--r);padding:8px 12px;font-size:12px;color:#065f46;margin-bottom:10px">🎓 <strong>Fresher mode active</strong> — each skill chip now shows a fresher-fit score. Green = easy entry path for a 0–3yr candidate.</div><div class="skills-grid" id="skillsGrid"></div>
     </div>
     <div class="grid2">
-      <div class="card"><div class="card-title">Salary premium vs city median — by skill (Instahyre Index 2025)</div><div class="chart-wrap" style="height:250px"><canvas id="premChart" role="img" aria-label="Salary premium by skill">Premium percentage above city median for top skills.</canvas></div></div>
-      <div class="card"><div class="card-title">Skill demand shift — 2024 vs Q1 2026</div><div class="chart-wrap" style="height:250px"><canvas id="trendChart" role="img" aria-label="Skill demand 2024 vs 2026">Year on year skill demand comparison.</canvas></div></div>
+      <div class="card"><div class="card-title" id="prem-chart-title">Salary premium vs city median — by skill (Instahyre Index 2025)</div><div class="chart-wrap" style="height:250px"><canvas id="premChart" role="img" aria-label="Salary premium by skill">Premium percentage above city median for top skills.</canvas></div></div>
+      <div class="card"><div class="card-title" id="trend-chart-title">Skill demand shift — 2024 vs Q1 2026</div><div class="chart-wrap" style="height:250px"><canvas id="trendChart" role="img" aria-label="Skill demand 2024 vs 2026">Year on year skill demand comparison.</canvas></div></div>
     </div>
   </div>
 
@@ -866,6 +866,41 @@ ahm:{name:'Ahmedabad',color:'#10b981',
 },
 };
 
+
+// ── Per-role premium & trend data (injected at runtime) ──────────────────────
+const ROLE_PREM = {
+  all:        { labels:['GenAI/LLMs','MLOps','Kubernetes','Go/Rust','AWS'],           data:[52,38,28,24,18] },
+  swe:        { labels:['Go/Rust','Kubernetes','React/Next.js','TypeScript','Java'],   data:[24,22,18,14,10] },
+  data:       { labels:['GenAI/LLMs','MLOps','Spark/Databricks','PyTorch','SQL'],      data:[55,40,28,32,12] },
+  pm:         { labels:['AI Product Mgmt','Growth Analytics','Figma+PM','B2B SaaS','0-1 Products'], data:[38,28,22,18,15] },
+  devops:     { labels:['AWS Architect','Kubernetes','Terraform','GitOps','Azure'],    data:[32,28,24,18,16] },
+  design:     { labels:['Motion Design','UX Research','Figma Expert','Design Systems','AR/VR UX'], data:[30,26,20,18,24] },
+  leadership: { labels:['AI/ML Org Leader','Platform Eng VP','Product VP','Engineering Dir','CTO'], data:[45,38,32,28,22] },
+};
+
+const ROLE_TREND = {
+  all:        { labels:['Python','GenAI','K8s','React','Java'],        v24:[80,42,65,70,76], v26:[95,98,87,84,72] },
+  swe:        { labels:['React/Next','TypeScript','Go','Rust','Java'],  v24:[70,62,42,30,78], v26:[84,80,72,58,74] },
+  data:       { labels:['GenAI/LLMs','MLOps','Spark','PyTorch','SQL'], v24:[40,48,68,55,72], v26:[98,82,74,80,70] },
+  pm:         { labels:['AI Product','Growth','Analytics','B2B','0-1'],v24:[32,60,58,64,45], v26:[78,74,72,68,65] },
+  devops:     { labels:['K8s','Terraform','AWS','GitOps','ArgoCD'],     v24:[65,58,72,44,36], v26:[87,78,89,74,68] },
+  design:     { labels:['Figma','Motion','UX Research','Design Sys','AR/VR'],v24:[72,44,60,52,28],v26:[86,72,78,74,56]},
+  leadership: { labels:['AI Org','Platform','Product','Growth','M&A'],  v24:[44,58,68,62,36], v26:[82,76,72,74,48] },
+};
+
+const ROLE_EMP_HIGHLIGHT = {
+  all:     null,
+  swe:     null,
+  data:    null,
+  pm:      null,
+  devops:  null,
+  design:  null,
+  leadership: null,
+};
+
+// Company filter → highlight employer type in donut
+const CO_EMP_MAP = { gcc:'GCC/MNC', startup:'Startup', it:'IT Services', all:null };
+
 // ═══════════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════════
@@ -937,26 +972,43 @@ function applyFilters(){
 
   updateFilterBadge(f);
 
-  // KPI strip reacts to role — shows role-specific vacancy rate
+  // ── KPI strip: role-specific vacancy rate ──────────────────
   updateKPIs(d,f);
 
-  // Salary chart reacts to role — shows level breakdown for that role
-  updateSalaryChart(d,f);
+  // ── Overview panel charts ──────────────────────────────────
+  updateSalaryChart(d,f);   // role → career level breakdown
+  updateHiringChart(d,f);   // role → role-specific posting volume
+  updateEmpChart(d,f);      // company → highlight employer segment
 
-  // Hiring trend reacts to role — shows role-specific posting volume
-  updateHiringChart(d,f);
-
-  // Job list reacts to ALL filters
+  // ── Jobs panel: ALL filters ────────────────────────────────
   renderFilteredJobs(d,f);
 
-  // Skills panel reacts to exp filter — shows fresher-fit bars when 0-3yr
+  // ── Skills panel: role → relevant skills + fresher-fit ────
   renderSkills(d,f);
+  updatePremChart(d,f);     // role → role-specific salary premiums
+  updateTrendChart(d,f);    // role → role-specific skill trends
 
-  // Vacancy panel reacts to role + exp filters
+  // ── Experience salary chart: role → level breakdown ────────
+  updateExpChart(d,f);
+
+  // ── Vacancy/fresher panel: role + exp ──────────────────────
   renderVacancyPanel(d,f);
 
-  // Exp salary chart reacts to role filter
-  updateExpChart(d,f);
+  // ── Update all section card titles with filter context ─────
+  updateSectionTitles(f);
+}
+
+function updateSectionTitles(f){
+  const roleNames={all:'All Roles',swe:'Software Engineer',data:'Data / AI / ML',pm:'Product Manager',devops:'DevOps / Cloud',design:'Design / UX',leadership:'Director / VP'};
+  const expNames={all:'',"0-3":' · 0–3 yr','3-7':' · 3–7 yr','7-12':' · 7–12 yr','12+':' · 12+ yr'};
+  const coNames={all:'',gcc:' · GCC/MNC',startup:' · Startup',it:' · IT Services'};
+  const ctx = (roleNames[f.role]||'All') + (expNames[f.exp]||'') + (coNames[f.co]||'');
+  // Skills tab city name shows filter context
+  const sc = document.getElementById('skill-city');
+  if(sc) sc.textContent = C[city].name + (f.role!=='all' ? ' — ' + roleNames[f.role] : '');
+  // Job tab context
+  const jc = document.getElementById('job-city');
+  if(jc) jc.textContent = C[city].name + (ctx!=='All Roles'?' ('+ctx+')':'');
 }
 
 function clearFilters(){
@@ -1016,10 +1068,18 @@ function roleLabel(r){
 
 // ── Salary chart — reacts to role ──────────────────────────
 function updateSalaryChart(d,f){
-  const key = f.role==='all' ? 'all' : f.role;
-  const salData = d.salByRole[key] || d.salByRole['all'];
+  const key = (f.role!=='all' && d.salByRole[f.role]) ? f.role : 'all';
+  const salData = d.salByRole[key];
+  // Update chart title to reflect filter
+  const salTitle = document.getElementById('sal-chart-title');
+  if(salTitle){
+    const roleNames = {all:'All Roles',swe:'Software Engineer',data:'Data / AI / ML',pm:'Product Manager',devops:'DevOps / Cloud',design:'Design / UX',leadership:'Director / VP'};
+    salTitle.textContent = 'Salary range by level — ' + (roleNames[f.role]||'All Roles') + ' · ₹ LPA';
+  }
   kill('sal');
-  charts.sal=new Chart(document.getElementById('salChart').getContext('2d'),{
+  const el = document.getElementById('salChart');
+  if(!el) return;
+  charts.sal=new Chart(el.getContext('2d'),{
     type:'bar',
     data:{labels:salData.labels,datasets:[
       {label:'Min ₹L',data:salData.min,backgroundColor:'rgba(26,127,212,0.35)',borderRadius:4,barPercentage:.5},
@@ -1028,16 +1088,23 @@ function updateSalaryChart(d,f){
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:true,position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},
       scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+v+'L'},grid:{color:GC}},
-              x:{ticks:{color:TC,font:{size:10},autoSkip:false},grid:{display:false}}}}
+              x:{ticks:{color:TC,font:{size:10},autoSkip:false,maxRotation:30},grid:{display:false}}}}
   });
 }
 
 // ── Hiring chart — reacts to role ──────────────────────────
 function updateHiringChart(d,f){
-  const key = f.role==='all'?'all':(d.hiring[f.role]?f.role:'all');
+  const key = (f.role!=='all' && d.hiring[f.role]) ? f.role : 'all';
   const hData = d.hiring[key] || d.hiring['all'];
+  const hTitle = document.getElementById('hiring-chart-title');
+  if(hTitle){
+    const roleNames={all:'All Roles',swe:'SWE',data:'Data/AI',pm:'PM',devops:'DevOps',design:'Design',leadership:'Leadership'};
+    hTitle.textContent = 'Hiring trend — ' + roleNames[f.role] + ' job postings index';
+  }
   kill('hiring');
-  charts.hiring=new Chart(document.getElementById('hiringChart').getContext('2d'),{
+  const el = document.getElementById('hiringChart');
+  if(!el) return;
+  charts.hiring=new Chart(el.getContext('2d'),{
     type:'line',
     data:{labels:['Q1 25','Q2 25','Q3 25','Q4 25','Q1 26'],datasets:[{
       data:hData,borderColor:d.color,backgroundColor:d.color+'22',
@@ -1159,6 +1226,82 @@ function renderVacancyPanel(d,f){
 // highlightLifeCards removed — lifestyle filter removed
 
 
+
+// ── Premium chart — reacts to role filter ────────────────────
+function updatePremChart(d,f){
+  const premData = ROLE_PREM[f.role] || ROLE_PREM['all'];
+  const premTitle = document.getElementById('prem-chart-title');
+  if(premTitle){
+    const roleNames={all:'All Skills',swe:'SWE skills',data:'Data/AI skills',pm:'PM skills',devops:'DevOps skills',design:'Design skills',leadership:'Leadership skills'};
+    premTitle.textContent = 'Salary premium vs city median — ' + roleNames[f.role];
+  }
+  kill('prem');
+  const el = document.getElementById('premChart');
+  if(!el) return;
+  charts.prem=new Chart(el.getContext('2d'),{
+    type:'bar',
+    data:{labels:premData.labels,datasets:[{
+      data:premData.data,
+      backgroundColor:['#ef444499','#f59e0b99','#1a7fd499','#0e9e6e99','#8b5cf699'],
+      borderRadius:4
+    }]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:TC,font:{size:10},callback:v=>'+'+v+'%'},grid:{color:GC}},
+              y:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}
+  });
+}
+
+// ── Trend chart — reacts to role filter ──────────────────────
+function updateTrendChart(d,f){
+  const trendData = ROLE_TREND[f.role] || ROLE_TREND['all'];
+  const trendTitle = document.getElementById('trend-chart-title');
+  if(trendTitle){
+    const roleNames={all:'All Skills',swe:'SWE',data:'Data/AI',pm:'Product',devops:'DevOps',design:'Design',leadership:'Leadership'};
+    trendTitle.textContent = 'Skill demand shift 2024→2026 — ' + roleNames[f.role] + ' focus';
+  }
+  kill('trend');
+  const el = document.getElementById('trendChart');
+  if(!el) return;
+  charts.trend=new Chart(el.getContext('2d'),{
+    type:'bar',
+    data:{labels:trendData.labels,datasets:[
+      {label:'2024',data:trendData.v24,backgroundColor:'rgba(30,80,160,0.18)',borderRadius:3},
+      {label:'Q1 2026',data:trendData.v26,backgroundColor:d.color+'cc',borderRadius:3}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},
+      scales:{y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}},
+              x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}
+  });
+}
+
+// ── Employer chart — reacts to company filter ─────────────────
+function updateEmpChart(d,f){
+  const empTitle = document.getElementById('emp-chart-title');
+  if(empTitle){
+    const coNames={all:'All Companies',gcc:'GCC / MNC only',startup:'Startup / Unicorn only',it:'IT Services only'};
+    empTitle.textContent = 'Employer mix — ' + coNames[f.co];
+  }
+  // Highlight/dim segments based on company filter
+  const base = [d.emp.gcc, d.emp.it, d.emp.startup, d.emp.other];
+  const highlight = {gcc:[0], startup:[2], it:[1], all:[]};
+  const hi = highlight[f.co] || [];
+  const colors = ['#0e9e6e','#1a7fd4','#d97706','#888'].map((col,i)=>
+    (hi.length===0 || hi.includes(i)) ? col : col+'44'
+  );
+  kill('emp');
+  const el = document.getElementById('empChart');
+  if(!el) return;
+  charts.emp=new Chart(el.getContext('2d'),{
+    type:'doughnut',
+    data:{labels:['GCC/MNC','IT Services','Startup','Other'],datasets:[{
+      data:base,backgroundColor:colors,borderWidth:0,hoverOffset:5
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}}}
+  });
+}
+
 // ── Experience salary chart — reacts to role ────────────────
 function updateExpChart(d,f){
   const key = (f.role!=='all' && d.salByRole[f.role]) ? f.role : 'all';
@@ -1269,27 +1412,30 @@ function renderInsights(d){
 }
 
 function renderOtherCharts(d){
-  kill('emp');
-  const ec=document.getElementById('empChart');
-  if(ec) charts.emp=new Chart(ec.getContext('2d'),{type:'doughnut',data:{labels:['GCC/MNC','IT Services','Startup','Other'],datasets:[{data:[d.emp.gcc,d.emp.it,d.emp.startup,d.emp.other],backgroundColor:['#0e9e6e','#1a7fd4','#d97706','#888'],borderWidth:0,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}}}});
-
-  kill('prem');
-  const pc=document.getElementById('premChart');
-  if(pc) charts.prem=new Chart(pc.getContext('2d'),{type:'bar',data:{labels:d.prem.labels,datasets:[{data:d.prem.data,backgroundColor:['#ef444499','#f59e0b99','#1a7fd499','#0e9e6e99','#8b5cf699'],borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:TC,font:{size:10},callback:v=>'+'+v+'%'},grid:{color:GC}},y:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
-
-  kill('trend');
-  const tc=document.getElementById('trendChart');
-  if(tc) charts.trend=new Chart(tc.getContext('2d'),{type:'bar',data:{labels:d.trend.labels,datasets:[{label:'2024',data:d.trend.v24,backgroundColor:'rgba(30,80,160,0.18)',borderRadius:3},{label:'Q1 2026',data:d.trend.v26,backgroundColor:d.color+'cc',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},scales:{y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}},x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
-
-  // expChart handled by updateExpChart in applyFilters
+  // emp/prem/trend → reactive, handled by applyFilters
+  // cost + disp → city-level, rendered on city switch here
 
   kill('cost');
   const cc=document.getElementById('costChart');
-  if(cc) charts.cost=new Chart(cc.getContext('2d'),{type:'bar',data:{labels:d.cost.labels,datasets:[{data:d.cost.data,backgroundColor:['#ef444488','#f59e0b88','#1a7fd488','#8b5cf688','#0e9e6e88','#88888888'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+(v/1000).toFixed(0)+'K'},grid:{color:GC}},x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
+  if(cc) charts.cost=new Chart(cc.getContext('2d'),{type:'bar',
+    data:{labels:d.cost.labels,datasets:[{data:d.cost.data,
+      backgroundColor:['#ef444488','#f59e0b88','#1a7fd488','#8b5cf688','#0e9e6e88','#88888888'],
+      borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'\u20b9'+(v/1000).toFixed(0)+'K'},grid:{color:GC}},
+              x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
 
   kill('disp');
   const dc=document.getElementById('dispChart');
-  if(dc) charts.disp=new Chart(dc.getContext('2d'),{type:'bar',data:{labels:d.disp.labels,datasets:[{label:'Gross/mo',data:d.disp.gross,backgroundColor:'rgba(26,127,212,0.35)',borderRadius:4},{label:'Disposable/mo',data:d.disp.net,backgroundColor:'rgba(14,158,110,0.65)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+(v/1000).toFixed(0)+'K'},grid:{color:GC}},x:{ticks:{color:TC,font:{size:9},maxRotation:30},grid:{display:false}}}}});
+  if(dc) charts.disp=new Chart(dc.getContext('2d'),{type:'bar',
+    data:{labels:d.disp.labels,datasets:[
+      {label:'Gross/mo',data:d.disp.gross,backgroundColor:'rgba(26,127,212,0.35)',borderRadius:4},
+      {label:'Disposable/mo',data:d.disp.net,backgroundColor:'rgba(14,158,110,0.65)',borderRadius:4}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},
+      scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'\u20b9'+(v/1000).toFixed(0)+'K'},grid:{color:GC}},
+              x:{ticks:{color:TC,font:{size:9},maxRotation:30},grid:{display:false}}}}});
 }
 
 // ═══════════════════════════════════════════════════════════════
