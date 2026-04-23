@@ -169,6 +169,12 @@ select:focus{outline:none;border-color:var(--accent)}
 
 <div class="city-tabs">
   <div class="city-tab active" onclick="switchCity('blr',this)"><span class="cdot" style="background:#ef4444"></span>Bengaluru</div>
+  <div class="city-tab" onclick="switchCity('hyd',this)"><span class="cdot" style="background:#f59e0b"></span>Hyderabad</div>
+  <div class="city-tab" onclick="switchCity('mum',this)"><span class="cdot" style="background:#3b82f6"></span>Mumbai</div>
+  <div class="city-tab" onclick="switchCity('ncr',this)"><span class="cdot" style="background:#8b5cf6"></span>Delhi NCR</div>
+  <div class="city-tab" onclick="switchCity('ahm',this)"><span class="cdot" style="background:#10b981"></span>Ahmedabad</div>
+  <div class="city-tab" onclick="switchCity('compare',this)">⇄ Compare All</div>
+</div>
 
 <div class="filters">
   <span class="fl">Refine</span>
@@ -199,24 +205,17 @@ select:focus{outline:none;border-color:var(--accent)}
   <div class="fdiv"></div>
   <select id="f-sal" onchange="applyFilters()">
     <option value="0">Any Salary</option>
-    <option value="10">Min ₹10L</option>
-    <option value="20">Min ₹20L</option>
-    <option value="30">Min ₹30L</option>
-    <option value="50">Min ₹50L</option>
+    <option value="10">Min &#8377;10L</option>
+    <option value="20">Min &#8377;20L</option>
+    <option value="30">Min &#8377;30L</option>
+    <option value="50">Min &#8377;50L</option>
   </select>
-  <button class="filter-clear" onclick="clearFilters()">✕ Clear all</button>
+  <button class="filter-clear" onclick="clearFilters()">&#10005; Clear all</button>
   <span id="filter-badge" style="font-size:11px;color:var(--accent);font-weight:500;margin-left:4px;display:none"></span>
 </div>
+<div id="filter-ctx" style="display:none;font-size:11px;color:var(--text2);background:rgba(26,127,212,0.06);padding:6px 24px;border-bottom:1px solid var(--border)"></div>
 
 
-
-
-  <div class="city-tab" onclick="switchCity('hyd',this)"><span class="cdot" style="background:#f59e0b"></span>Hyderabad</div>
-  <div class="city-tab" onclick="switchCity('mum',this)"><span class="cdot" style="background:#3b82f6"></span>Mumbai</div>
-  <div class="city-tab" onclick="switchCity('ncr',this)"><span class="cdot" style="background:#8b5cf6"></span>Delhi NCR</div>
-  <div class="city-tab" onclick="switchCity('ahm',this)"><span class="cdot" style="background:#10b981"></span>Ahmedabad</div>
-  <div class="city-tab" onclick="switchCity('compare',this)">⇄ Compare All</div>
-</div>
 
 <div class="main">
   <div class="kpi-strip" id="kpi-strip"></div>
@@ -246,14 +245,14 @@ select:focus{outline:none;border-color:var(--accent)}
       <div class="card"><div class="card-title">Hiring trend — job postings index (NASSCOM / Naukri JobSpeak)</div><div class="chart-wrap" style="height:190px"><canvas id="hiringChart" role="img" aria-label="Quarterly hiring trend">Hiring trend Q1 2025 to Q1 2026.</canvas></div></div>
       <div class="card"><div class="card-title">Employer type mix — Q1 2026 (Vestian / JLL)</div><div class="chart-wrap" style="height:190px"><canvas id="empChart" role="img" aria-label="Employer mix donut chart">GCC, IT services, startup, other breakdown.</canvas></div></div>
     </div>
-  </div>
-
-  <div class="panel active" id="panel-vacancy-stub" style="display:none"></div>
+  
 <div style="margin-top:14px" id="vacancy-panel-wrap">
   <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Role vacancy &amp; fresher opportunity intelligence — updates with your filters</div>
   <div id="vacancy-panel"></div>
 </div>
+</div>
 
+  
 <div class="panel" id="panel-skills">
     <div class="card" style="margin-bottom:14px">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
@@ -909,14 +908,21 @@ function switchCity(id,el){
   city=id;
   document.querySelectorAll('.city-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
+  // Reset to overview when switching city
+  activeSection = 'overview';
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-overview').classList.add('active');
+  document.querySelectorAll('.stab').forEach((s,i)=>{s.classList.remove('active');if(i===0)s.classList.add('active')});
   renderAll();
 }
 
+let activeSection = 'overview';
 function showSection(id,el){
   document.querySelectorAll('.stab').forEach(s=>s.classList.remove('active'));
   el.classList.add('active');
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
+  activeSection = id;
   if(id==='compare') renderCompare();
   else renderAll();
 }
@@ -947,16 +953,32 @@ function applyFilters(){
 
   // Vacancy panel reacts to role + exp filters
   renderVacancyPanel(d,f);
+
+  // Exp salary chart reacts to role filter
+  updateExpChart(d,f);
 }
 
 function clearFilters(){
   ['f-role','f-exp','f-co'].forEach(id=>document.getElementById(id).value='all');
   document.getElementById('f-sal').value='0';
+  const ctx=document.getElementById('filter-ctx');
+  if(ctx){ctx.style.display='none';ctx.textContent='';}
   applyFilters();
 }
 
 // ── KPI update ──────────────────────────────────────────────
 function updateKPIs(d,f){
+  // Update context strip
+  const ctx = document.getElementById('filter-ctx');
+  if(ctx){
+    const parts = [];
+    if(f.role!=='all') parts.push(roleLabel(f.role));
+    if(f.exp!=='all') parts.push(f.exp+' yrs');
+    if(f.co!=='all') parts.push(f.co.toUpperCase());
+    if(f.sal>0) parts.push('Min ₹'+f.sal+'L+');
+    ctx.textContent = parts.length ? 'Showing: '+parts.join(' · ') : '';
+    ctx.style.display = parts.length ? 'block' : 'none';
+  }
   const vac = d.vacancyByRole[f.role] || d.vacancyByRole['all'];
   // Inject live vacancy KPI into the strip dynamically
   const kpis = [...d.kpis];
@@ -1115,7 +1137,7 @@ function renderVacancyPanel(d,f){
     </div>`;
 
   // Vacancy breakdown chart
-  setTimeout(()=>{
+  requestAnimationFrame(()=>{
     kill('vac');
     const ctx=document.getElementById('vacancyChart');
     if(!ctx)return;
@@ -1134,6 +1156,31 @@ function renderVacancyPanel(d,f){
 }
 
 // highlightLifeCards removed — lifestyle filter removed
+
+
+// ── Experience salary chart — reacts to role ────────────────
+function updateExpChart(d,f){
+  const key = (f.role!=='all' && d.salByRole[f.role]) ? f.role : 'all';
+  const sal = d.salByRole[key];
+  // Map role-level labels to exp labels when role is selected
+  const useExpSal = f.role==='all';
+  const labels = useExpSal ? d.expSal.labels : sal.labels;
+  const minD    = useExpSal ? d.expSal.min    : sal.min;
+  const maxD    = useExpSal ? d.expSal.max    : sal.max;
+  kill('exp');
+  const xc=document.getElementById('expChart');
+  if(!xc)return;
+  charts.exp=new Chart(xc.getContext('2d'),{type:'bar',
+    data:{labels,datasets:[
+      {label:'Min ₹L',data:minD,backgroundColor:'rgba(26,127,212,0.35)',borderRadius:4},
+      {label:'Max ₹L',data:maxD,backgroundColor:'rgba(14,158,110,0.55)',borderRadius:4}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},
+      scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+v+'L'},grid:{color:GC}},
+              x:{ticks:{color:TC,font:{size:9},autoSkip:false,maxRotation:30},grid:{display:false}}}}
+  });
+}
 
 // ═══════════════════════════════════════════════════════════════
 // FULL RENDER (city switch or section switch)
@@ -1233,9 +1280,7 @@ function renderOtherCharts(d){
   const tc=document.getElementById('trendChart');
   if(tc) charts.trend=new Chart(tc.getContext('2d'),{type:'bar',data:{labels:d.trend.labels,datasets:[{label:'2024',data:d.trend.v24,backgroundColor:'rgba(30,80,160,0.18)',borderRadius:3},{label:'Q1 2026',data:d.trend.v26,backgroundColor:d.color+'cc',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},scales:{y:{ticks:{color:TC,font:{size:10}},grid:{color:GC}},x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
 
-  kill('exp');
-  const xc=document.getElementById('expChart');
-  if(xc) charts.exp=new Chart(xc.getContext('2d'),{type:'bar',data:{labels:d.expSal.labels,datasets:[{label:'Min ₹L',data:d.expSal.min,backgroundColor:'rgba(26,127,212,0.35)',borderRadius:4},{label:'Max ₹L',data:d.expSal.max,backgroundColor:'rgba(14,158,110,0.55)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:TC,font:{size:10},boxWidth:10,padding:8}}},scales:{y:{ticks:{color:TC,font:{size:10},callback:v=>'₹'+v+'L'},grid:{color:GC}},x:{ticks:{color:TC,font:{size:10}},grid:{display:false}}}}});
+  // expChart handled by updateExpChart in applyFilters
 
   kill('cost');
   const cc=document.getElementById('costChart');
